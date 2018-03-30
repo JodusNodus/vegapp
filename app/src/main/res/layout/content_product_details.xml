@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".ProductDetailsActivity"
+    tools:showIn="@layout/activity_product_details">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10pt"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lotus Speculoos"
+            style="@style/Base.TextAppearance.AppCompat.Title" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Geplaatst door Thomas B. op 2 January"/>
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="43dp"
+            android:layout_marginBottom="0pt"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:paddingBottom="0pt"
+            android:progressTint="@android:color/holo_orange_light"
+            android:rating="4"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
+            android:transformPivotX="0dp"
+            android:transformPivotY="0dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <Button
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/action_product_in_cart"
+                android:backgroundTint="@android:color/transparent"
+                android:textColor="@color/colorPrimary"
+
+                android:layout_width="0pt" />
+            <Button
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_width="0pt"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/colorAccent"
+                android:text="@string/action_mark_product_invalid"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10pt"
+            android:text="@string/available_in_supermarkets"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include layout="@layout/supermarket_list_item"/>
+            <include layout="@layout/supermarket_list_item"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
