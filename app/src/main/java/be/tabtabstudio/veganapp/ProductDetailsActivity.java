@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -36,6 +37,8 @@ import static java.util.Calendar.*;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
+    private Button addToBasketBtn;
+    private Button markInvalidBtn;
     private TextView productTitleView;
     private TextView productShortDetails;
     private RatingBar productRating;
@@ -47,19 +50,23 @@ public class ProductDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 
+        addToBasketBtn = findViewById(R.id.add_to_cart_btn);
+        markInvalidBtn = findViewById(R.id.mark_invalid_btn);
+
         productTitleView = findViewById(R.id.product_title);
         productShortDetails  = findViewById(R.id.product_short_details);
         productRating  = findViewById(R.id.product_rating);
         coverImageView = findViewById(R.id.product_cover_image_view);
         supermarketList = findViewById(R.id.supermarkets_list);
 
-        setProduct(Product.getMock());
+        addToBasketBtn.setOnClickListener((View v) -> {
+            // do something here
+        });
+        markInvalidBtn.setOnClickListener((View v) -> {
+            // do something here
+        });
 
-        List<Supermarket> supermarkets = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            supermarkets.add(Supermarket.getMock());
-        }
-        showSupermarkets(supermarkets);
+        setProduct(Product.getMock());
     }
 
     private String formatDate(Date date) {
@@ -75,9 +82,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
          productRating.setRating(p.rating);
 
          Picasso.get().load(p.coverPicture).into(coverImageView);
+
+         showSupermarkets(p.supermarkets);
      }
 
-    public void showSupermarkets(List<Supermarket> supermarkets) {
+    private void showSupermarkets(List<Supermarket> supermarkets) {
         Supermarket[] smArr = new Supermarket[supermarkets.size()];
         smArr = supermarkets.toArray(smArr);
 

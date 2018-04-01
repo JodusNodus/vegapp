@@ -44,6 +44,7 @@
             android:orientation="horizontal"
             android:weightSum="2">
             <Button
+                android:id="@+id/add_to_cart_btn"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/action_product_in_cart"
@@ -52,6 +53,7 @@
 
                 android:layout_width="0pt" />
             <Button
+                android:id="@+id/mark_invalid_btn"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_width="0pt"
