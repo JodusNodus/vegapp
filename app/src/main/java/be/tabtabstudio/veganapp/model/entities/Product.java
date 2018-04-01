@@ -21,10 +21,6 @@ public class Product {
         for (int i = 0; i < 5; i++) {
             p.labels.add(Label.getMock());
         }
-        p.supermarkets = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            p.supermarkets.add(Supermarket.getMock());
-        }
         return p;
     }
 
@@ -38,5 +34,4 @@ public class Product {
     public String coverPicture;
     public String thumbPicture;
     public List<Label> labels;
-    public List<Supermarket> supermarkets;
 }

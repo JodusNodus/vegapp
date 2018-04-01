@@ -1,4 +1,4 @@
-package be.tabtabstudio.veganapp;
+package be.tabtabstudio.veganapp.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -30,6 +30,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
+import be.tabtabstudio.veganapp.R;
 import be.tabtabstudio.veganapp.model.entities.Product;
 import be.tabtabstudio.veganapp.model.entities.Supermarket;
 
@@ -66,7 +67,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
             // do something here
         });
 
+        // Mock data
         setProduct(Product.getMock());
+        List supermarkets = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            supermarkets.add(Supermarket.getMock());
+        }
+        showSupermarkets(supermarkets);
     }
 
     private String formatDate(Date date) {
@@ -87,8 +94,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
              markInvalidBtn.setEnabled(false);
              markInvalidBtn.setAlpha(.5f);
          }
-
-         showSupermarkets(p.supermarkets);
      }
 
     private void showSupermarkets(List<Supermarket> supermarkets) {

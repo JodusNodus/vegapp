@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="be.tabtabstudio.veganapp.MainActivity">
+    tools:context="be.tabtabstudio.veganapp.ui.MainActivity">
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
