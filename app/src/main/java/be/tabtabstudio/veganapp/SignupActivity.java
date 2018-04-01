@@ -28,15 +28,16 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class LoginActivity extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity {
 
+    private EditText mFirstNameView;
+    private EditText mLastNameView;
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -46,23 +47,27 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mFirstNameView = findViewById(R.id.first_name);
+        mLastNameView = findViewById(R.id.last_name);
         mEmailView = findViewById(R.id.email);
         mPasswordView = findViewById(R.id.password);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
+        Button mEmailSignUpButton = findViewById(R.id.email_sign_up_button);
 
-        mEmailSignInButton.setOnClickListener((View v) -> {
-            attemptLogin();
+        mEmailSignUpButton.setOnClickListener((View v) -> {
+            attemptSignup();
         });
     }
 
-    private void attemptLogin() {
+    private void attemptSignup() {
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
+        String firstName = mFirstNameView.getText().toString();
+        String lastName = mLastNameView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
     }
