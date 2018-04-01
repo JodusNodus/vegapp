@@ -24,8 +24,9 @@
             app:toolbarId="@+id/toolbar">
 
             <ImageView
+                android:id="@+id/product_cover_image_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" android:src="@mipmap/ic_launcher" />
+                android:layout_height="match_parent" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

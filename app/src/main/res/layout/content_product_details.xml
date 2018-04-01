@@ -14,17 +14,18 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/product_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lotus Speculoos"
             style="@style/Base.TextAppearance.AppCompat.Title" />
 
         <TextView
+            android:id="@+id/product_short_details"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Geplaatst door Thomas B. op 2 January"/>
+            android:layout_height="wrap_content" />
 
         <RatingBar
+            android:id="@+id/product_rating"
             android:layout_width="wrap_content"
             android:layout_height="43dp"
             android:layout_marginBottom="0pt"
@@ -32,7 +33,6 @@
             android:numStars="5"
             android:paddingBottom="0pt"
             android:progressTint="@android:color/holo_orange_light"
-            android:rating="4"
             android:scaleX="0.5"
             android:scaleY="0.5"
             android:transformPivotX="0dp"
@@ -65,13 +65,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10pt"
             android:text="@string/available_in_supermarkets"/>
+
         <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/supermarkets_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <include layout="@layout/supermarket_list_item"/>
-            <include layout="@layout/supermarket_list_item"/>
-        </LinearLayout>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

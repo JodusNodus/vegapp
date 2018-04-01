@@ -38,15 +38,14 @@
         android:paddingTop="16dp">
 
         <TextView
-            android:id="@+id/first_text_view"
+            android:id="@+id/supermarket_name"
             style="@style/TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="Delhaize" />
+            android:singleLine="true" />
 
         <TextView
-            android:id="@+id/second_text_view"
+            android:id="@+id/supermarket_address"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

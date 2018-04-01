@@ -19,4 +19,6 @@
     <string name="action_product_in_cart">IN WINKELMAND</string>
     <string name="action_mark_product_invalid">INCORRECT</string>
     <string name="available_in_supermarkets">Verkrijgbaar in</string>
+    <string name="title_activity_overview">Overview</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
