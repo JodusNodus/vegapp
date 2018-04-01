@@ -83,6 +83,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
          Picasso.get().load(p.coverPicture).into(coverImageView);
 
+         if (p.userHasCorrected) {
+             markInvalidBtn.setEnabled(false);
+             markInvalidBtn.setAlpha(.5f);
+         }
+
          showSupermarkets(p.supermarkets);
      }
 

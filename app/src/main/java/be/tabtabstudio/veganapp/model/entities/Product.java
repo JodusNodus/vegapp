@@ -16,6 +16,7 @@ public class Product {
         p.rating = 4;
         p.thumbPicture = "https://storage.googleapis.com/vegstorage/thumb-555555555555";
         p.coverPicture = "https://storage.googleapis.com/vegstorage/cover-555555555555";
+        p.userHasCorrected = true;
         p.labels = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             p.labels.add(Label.getMock());
@@ -33,6 +34,7 @@ public class Product {
     public Date creationdate;
     public User user;
     public int rating;
+    public boolean userHasCorrected;
     public String coverPicture;
     public String thumbPicture;
     public List<Label> labels;
