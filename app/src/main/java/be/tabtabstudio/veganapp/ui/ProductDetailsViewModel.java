@@ -11,22 +11,13 @@ import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.Supermarket;
 
 public class ProductDetailsViewModel extends ViewModel {
-    private VegRepository repo;
-
-    public ProductDetailsViewModel() {
-        repo = VegRepository.getInstance();
-    }
 
     public LiveData<Product> getProductObservable() {
-        return repo.getProduct();
+        return VegRepository.getInstance().getProduct();
     }
 
     public LiveData<List<Supermarket>> getSupermarketsObservable() {
-        return repo.getSupermarkets();
-    }
-
-    public void fetchProduct(long ean) {
-        repo.fetchProduct(ean);
+        return VegRepository.getInstance().getSupermarkets();
     }
 
     public void handleAddToBasket() {
@@ -34,6 +25,7 @@ public class ProductDetailsViewModel extends ViewModel {
     }
 
     public void handleMarkInvalid() {
+        VegRepository repo = VegRepository.getInstance();
         Product p = repo.getProduct().getValue();
         if (p != null) {
             repo.markProductInvalid(p.ean);

@@ -39,10 +39,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private TextView productShortDetails;
     private RatingBar productRating;
     private ImageView coverImageView;
-    private LinearLayout supermarketList;
+    private LinearLayout supermarketListView;
     private ProductDetailsViewModel mViewModel;
-
-    private List<Supermarket> currentSupermarkets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +54,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         productShortDetails  = findViewById(R.id.product_short_details);
         productRating  = findViewById(R.id.product_rating);
         coverImageView = findViewById(R.id.product_cover_image_view);
-        supermarketList = findViewById(R.id.supermarkets_list);
+        supermarketListView = findViewById(R.id.supermarkets_list);
 
         mViewModel = ViewModelProviders.of(this).get(ProductDetailsViewModel.class);
 
@@ -78,15 +76,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
         mViewModel.getSupermarketsObservable().observe(this, new Observer<List<Supermarket>>() {
             @Override
             public void onChanged(@Nullable List<Supermarket> supermarkets) {
-                if (supermarkets != null && supermarkets != currentSupermarkets) {
-                    currentSupermarkets = supermarkets;
-                    showSupermarkets(supermarkets);
+                if (supermarkets != null) {
+                    setSupermarkets(supermarkets);
                 }
             }
         });
-
-        mViewModel.fetchProduct(555555555555L);
-
     }
 
     private String formatDate(Date date) {
@@ -109,14 +103,17 @@ public class ProductDetailsActivity extends AppCompatActivity {
          }
      }
 
-    private void showSupermarkets(List<Supermarket> supermarkets) {
+    private void setSupermarkets(List<Supermarket> supermarkets) {
+        // Clear items in view
+        supermarketListView.removeAllViews();
+
         Supermarket[] smArr = new Supermarket[supermarkets.size()];
         smArr = supermarkets.toArray(smArr);
 
         SupermarketListAdapter adapter = new SupermarketListAdapter(this, smArr);
         for (int i = 0; i < adapter.getCount(); i++) {
-            View view = adapter.getView(i, null, supermarketList);
-            supermarketList.addView(view);
+            View view = adapter.getView(i, null, supermarketListView);
+            supermarketListView.addView(view);
         }
     }
 

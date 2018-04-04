@@ -124,6 +124,7 @@ public class SplashActivity extends AppCompatActivity {
     private void loadProductDetails() {
         Intent k = new Intent(this, ProductDetailsActivity.class);
         startActivity(k);
+        mViewModel.fetchProduct(555555555555L);
     }
 
     @Override
