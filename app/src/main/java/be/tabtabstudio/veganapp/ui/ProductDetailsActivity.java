@@ -42,6 +42,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private LinearLayout supermarketList;
     private ProductDetailsViewModel mViewModel;
 
+    private List<Supermarket> currentSupermarkets;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +78,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         mViewModel.getSupermarketsObservable().observe(this, new Observer<List<Supermarket>>() {
             @Override
             public void onChanged(@Nullable List<Supermarket> supermarkets) {
-                if (supermarkets != null) {
+                if (supermarkets != null && supermarkets != currentSupermarkets) {
+                    currentSupermarkets = supermarkets;
                     showSupermarkets(supermarkets);
                 }
             }

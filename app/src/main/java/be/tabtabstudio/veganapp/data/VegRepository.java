@@ -111,4 +111,24 @@ public class VegRepository {
             }
         });
     }
+
+    public void markProductInvalid(long ean) {
+        api.markProductInvalid(ean).enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                if (response.code() == 200) {
+                    Product p = product.getValue();
+                    if (p.ean == ean) {
+                        p.userHasCorrected = true;
+                        product.setValue(p);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
 }
