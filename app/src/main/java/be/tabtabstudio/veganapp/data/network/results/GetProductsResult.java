@@ -1,8 +1,8 @@
-package be.tabtabstudio.veganapp.api.results;
+package be.tabtabstudio.veganapp.data.network.results;
 
 import java.util.List;
 
-import be.tabtabstudio.veganapp.model.entities.Product;
+import be.tabtabstudio.veganapp.data.entities.Product;
 
 public class GetProductsResult implements ApiResult {
     public List<Product> products;

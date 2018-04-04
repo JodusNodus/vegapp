@@ -1,4 +1,4 @@
-package be.tabtabstudio.veganapp.api.requestBodies;
+package be.tabtabstudio.veganapp.data.network.requestBodies;
 
 import java.util.List;
 

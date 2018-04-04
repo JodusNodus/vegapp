@@ -1,4 +1,4 @@
-package be.tabtabstudio.veganapp.api.requestBodies;
+package be.tabtabstudio.veganapp.data.network.requestBodies;
 
 public class UserLoginBody {
     public final String email;

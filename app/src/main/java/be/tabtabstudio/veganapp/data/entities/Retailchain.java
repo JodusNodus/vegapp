@@ -1,4 +1,4 @@
-package be.tabtabstudio.veganapp.model.entities;
+package be.tabtabstudio.veganapp.data.entities;
 
 public class Retailchain {
     public static Retailchain getMock() {

@@ -1,4 +1,4 @@
-package be.tabtabstudio.veganapp.api.requestBodies;
+package be.tabtabstudio.veganapp.data.network.requestBodies;
 
 public class UserSignupBody extends UserLoginBody {
     public final String firstname;

@@ -1,13 +1,13 @@
-package be.tabtabstudio.veganapp.model.entities;
+package be.tabtabstudio.veganapp.data.entities;
 
 public class Brand {
     public static Brand getMock() {
         Brand b = new Brand();
         b.brandid = 379;
-        b.name = "Lotus";
+        b.brandname = "Lotus";
         return b;
     }
 
     public int brandid;
-    public String name;
+    public String brandname;
 }

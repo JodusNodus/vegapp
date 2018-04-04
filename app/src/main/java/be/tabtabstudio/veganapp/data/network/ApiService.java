@@ -1,29 +1,27 @@
-package be.tabtabstudio.veganapp.api;
+package be.tabtabstudio.veganapp.data.network;
 
-import java.util.List;
-
-import be.tabtabstudio.veganapp.api.requestBodies.CreateProductBody;
-import be.tabtabstudio.veganapp.api.requestBodies.RateProductBody;
-import be.tabtabstudio.veganapp.api.requestBodies.UserLoginBody;
-import be.tabtabstudio.veganapp.api.requestBodies.UserSignupBody;
-import be.tabtabstudio.veganapp.api.results.GetBrandsResult;
-import be.tabtabstudio.veganapp.api.results.GetLabelsResult;
-import be.tabtabstudio.veganapp.api.results.GetProductResult;
-import be.tabtabstudio.veganapp.api.results.GetProductsResult;
-import be.tabtabstudio.veganapp.api.results.UploadProductImageResult;
-import be.tabtabstudio.veganapp.model.entities.Label;
-import be.tabtabstudio.veganapp.model.entities.Location;
-import be.tabtabstudio.veganapp.model.entities.User;
+import be.tabtabstudio.veganapp.data.network.requestBodies.CreateProductBody;
+import be.tabtabstudio.veganapp.data.network.requestBodies.RateProductBody;
+import be.tabtabstudio.veganapp.data.network.requestBodies.UserLoginBody;
+import be.tabtabstudio.veganapp.data.network.requestBodies.UserSignupBody;
+import be.tabtabstudio.veganapp.data.network.results.GetBrandsResult;
+import be.tabtabstudio.veganapp.data.network.results.GetLabelsResult;
+import be.tabtabstudio.veganapp.data.network.results.GetProductResult;
+import be.tabtabstudio.veganapp.data.network.results.GetProductsResult;
+import be.tabtabstudio.veganapp.data.network.results.LoginResult;
+import be.tabtabstudio.veganapp.data.network.results.UploadProductImageResult;
+import be.tabtabstudio.veganapp.data.entities.Location;
+import be.tabtabstudio.veganapp.data.entities.User;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
 public interface ApiService {
     @POST("signup")
-    Call<ApiResponse<User>> signup(@Body UserSignupBody userSignupBody);
+    Call<ApiResponse<LoginResult>> signup(@Body UserSignupBody userSignupBody);
 
     @POST("login")
-    Call<ApiResponse<User>> login(@Body UserLoginBody userLoginBody);
+    Call<ApiResponse<LoginResult>> login(@Body UserLoginBody userLoginBody);
 
     @POST("logout")
     Call<ApiResponse> logout();

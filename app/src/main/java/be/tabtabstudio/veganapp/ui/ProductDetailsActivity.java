@@ -1,21 +1,20 @@
 package be.tabtabstudio.veganapp.ui;
 
 import android.app.Activity;
-import android.content.Context;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -24,17 +23,13 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Observable;
 
 import be.tabtabstudio.veganapp.R;
-import be.tabtabstudio.veganapp.model.entities.Product;
-import be.tabtabstudio.veganapp.model.entities.Supermarket;
-
-import static java.util.Calendar.*;
+import be.tabtabstudio.veganapp.data.entities.Product;
+import be.tabtabstudio.veganapp.data.entities.Supermarket;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
@@ -45,6 +40,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private RatingBar productRating;
     private ImageView coverImageView;
     private LinearLayout supermarketList;
+    private ProductDetailsViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,20 +56,34 @@ public class ProductDetailsActivity extends AppCompatActivity {
         coverImageView = findViewById(R.id.product_cover_image_view);
         supermarketList = findViewById(R.id.supermarkets_list);
 
+        mViewModel = ViewModelProviders.of(this).get(ProductDetailsViewModel.class);
+
         addToBasketBtn.setOnClickListener((View v) -> {
-            // do something here
+            mViewModel.handleAddToBasket();
         });
         markInvalidBtn.setOnClickListener((View v) -> {
-            // do something here
+            mViewModel.handleMarkInvalid();
         });
 
-        // Mock data
-        setProduct(Product.getMock());
-        List supermarkets = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            supermarkets.add(Supermarket.getMock());
-        }
-        showSupermarkets(supermarkets);
+        mViewModel.getProductObservable().observe(this, new Observer<Product>() {
+            @Override
+            public void onChanged(@Nullable Product product) {
+                if (product != null) {
+                    setProduct(product);
+                }
+            }
+        });
+        mViewModel.getSupermarketsObservable().observe(this, new Observer<List<Supermarket>>() {
+            @Override
+            public void onChanged(@Nullable List<Supermarket> supermarkets) {
+                if (supermarkets != null) {
+                    showSupermarkets(supermarkets);
+                }
+            }
+        });
+
+        mViewModel.fetchProduct(555555555555L);
+
     }
 
     private String formatDate(Date date) {
@@ -81,8 +91,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         return dateFormat.format(date);
     }
 
-     public void setProduct(Product p) {
-         productTitleView.setText(p.brand.name + " " + p.name);
+     private void setProduct(Product p) {
+         productTitleView.setText(p.brand.brandname + " " + p.name);
 
          productShortDetails.setText(String.format("Geplaatst door %s op %s", p.user.getName(), formatDate(p.creationdate)));
 

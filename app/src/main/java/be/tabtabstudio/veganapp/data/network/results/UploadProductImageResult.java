@@ -1,4 +1,4 @@
-package be.tabtabstudio.veganapp.api.results;
+package be.tabtabstudio.veganapp.data.network.results;
 
 import java.util.List;
 

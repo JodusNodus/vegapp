@@ -1,4 +1,4 @@
-package be.tabtabstudio.veganapp.api.results;
+package be.tabtabstudio.veganapp.data.network.results;
 
 class GetProductsResultParams {
     public String searchquery;

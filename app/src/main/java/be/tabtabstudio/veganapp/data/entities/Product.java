@@ -1,4 +1,6 @@
-package be.tabtabstudio.veganapp.model.entities;
+package be.tabtabstudio.veganapp.data.entities;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +29,8 @@ public class Product {
     public long ean;
     public String name;
     public Brand brand;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     public Date creationdate;
     public User user;
     public int rating;
