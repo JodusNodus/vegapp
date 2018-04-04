@@ -92,7 +92,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
      private void setProduct(Product p) {
-         productTitleView.setText(p.brand.brandname + " " + p.name);
+         productTitleView.setText(p.getProductName());
 
          productShortDetails.setText(String.format("Geplaatst door %s op %s", p.user.getName(), formatDate(p.creationdate)));
 

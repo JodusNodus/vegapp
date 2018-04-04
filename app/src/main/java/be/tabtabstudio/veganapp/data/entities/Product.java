@@ -1,10 +1,13 @@
 package be.tabtabstudio.veganapp.data.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import be.tabtabstudio.veganapp.utilities.StringUtils;
 
 public class Product {
 
@@ -38,4 +41,9 @@ public class Product {
     public String coverPicture;
     public String thumbPicture;
     public List<Label> labels;
+
+    @JsonIgnore
+    public String getProductName() {
+        return StringUtils.capitize(brand.brandname) + " " + StringUtils.capitize(name);
+    }
 }
