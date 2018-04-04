@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import be.tabtabstudio.veganapp.R;
@@ -27,11 +28,13 @@ public class SplashActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSON_CODE = 1917;
 
     private SplashViewModel mViewModel;
+    private TextView loadingTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        loadingTextView = findViewById(R.id.loading_text_view);
 
         mViewModel = ViewModelProviders.of(this).get(SplashViewModel.class);
 
@@ -85,6 +88,7 @@ public class SplashActivity extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     private void startLocationListener() {
+        loadingTextView.setText("Finding your location");
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         // Define a listener that responds to location updates
