@@ -41,6 +41,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private ImageView coverImageView;
     private LinearLayout supermarketListView;
     private ProductDetailsViewModel mViewModel;
+    private View.OnClickListener supermarketClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        supermarketClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Integer index = (Integer) view.getTag();
+                mViewModel.handleSupermarketClick(ProductDetailsActivity.this, index);
+            }
+        };
     }
 
     private String formatDate(Date date) {
@@ -113,6 +122,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         SupermarketListAdapter adapter = new SupermarketListAdapter(this, smArr);
         for (int i = 0; i < adapter.getCount(); i++) {
             View view = adapter.getView(i, null, supermarketListView);
+            view.setTag(new Integer(i));
+            view.setOnClickListener(supermarketClickListener);
             supermarketListView.addView(view);
         }
     }
