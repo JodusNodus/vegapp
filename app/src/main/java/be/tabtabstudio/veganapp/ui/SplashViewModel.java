@@ -11,7 +11,7 @@ public class SplashViewModel extends ViewModel {
     public LiveData<Location> getLocationObservable() { return VegRepository.getInstance().getLocation(); }
     public LiveData<User> getUserObservable() { return VegRepository.getInstance().getUser(); }
 
-    public void setLocation(float lat, float lng) {
+    public void setLocation(double lat, double lng) {
         VegRepository.getInstance().setLocation(new Location(lat, lng));
     }
 
