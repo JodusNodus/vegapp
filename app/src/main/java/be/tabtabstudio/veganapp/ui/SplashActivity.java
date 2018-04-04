@@ -24,8 +24,8 @@ import be.tabtabstudio.veganapp.data.entities.User;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final int USER_LOGIN_CODE = 1719;
-    private static final int LOCATION_PERMISSON_CODE = 1917;
+    public static final int USER_LOGIN_CODE = 1719;
+    public static final int LOCATION_PERMISSON_CODE = 1917;
 
     private SplashViewModel mViewModel;
     private TextView loadingTextView;
@@ -41,97 +41,22 @@ public class SplashActivity extends AppCompatActivity {
         mViewModel.getLocationObservable().observe(this, new Observer<Location>() {
             @Override
             public void onChanged(@Nullable Location location) {
-                handleLocationLoad(location);
+                mViewModel.handleLocationLoad(SplashActivity.this, location);
             }
         });
 
-        loadUser();
+        mViewModel.startLoading(this);
     }
 
-    private void loadUser() {
-        User user = mViewModel.getUserObservable().getValue();
-
-        if (user == null) {
-            Intent k = new Intent(SplashActivity.this, LoginActivity.class);
-            startActivityForResult(k, USER_LOGIN_CODE);
-        }
-    }
-
-    private void handleUserLoad() {
-        User user = mViewModel.getUserObservable().getValue();
-        Log.i("test", user.firstname);
-        loadLocation();
-    }
-
-    private void loadLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestLocationPersmission();
-        } else {
-            startLocationListener();
-        }
-    }
-
-    private void requestLocationPersmission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.READ_CONTACTS)) {
-
-            // Show an explanation to the user *asynchronously* -- don't block
-            // this thread waiting for the user's response! After the user
-            // sees the explanation, try again to request the permission.
-
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSON_CODE);
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private void startLocationListener() {
+    public void showLoadingLocation() {
         loadingTextView.setText("Finding your location");
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-        // Define a listener that responds to location updates
-        LocationListener locationListener = new LocationListener() {
-            public void onLocationChanged(android.location.Location location) {
-                locationManager.removeUpdates(this);
-
-                double lat = location.getLatitude();
-                double lng = location.getLongitude();
-                mViewModel.setLocation(lat, lng);
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-            public void onProviderEnabled(String provider) {}
-            public void onProviderDisabled(String provider) {}
-        };
-
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-    }
-
-
-    private void handleLocationLoad(@Nullable Location location) {
-        if (location == null) {
-            Toast.makeText(this, "Location set Failed", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Toast.makeText(this, "Location set Succesfull", Toast.LENGTH_SHORT).show();
-
-        loadProductDetails();
-    }
-
-    private void loadProductDetails() {
-        Intent k = new Intent(this, ProductDetailsActivity.class);
-        startActivity(k);
-        mViewModel.fetchProduct(555555555555L);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == USER_LOGIN_CODE && resultCode == RESULT_OK) {
-            handleUserLoad();
+            mViewModel.handleUserLoad(this);
         }
     }
 
@@ -139,11 +64,8 @@ public class SplashActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case LOCATION_PERMISSON_CODE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startLocationListener();
-                } else {
-                    Toast.makeText(this, "Pls dont deny", Toast.LENGTH_SHORT).show();
+                if (grantResults.length > 0) {
+                    mViewModel.handleLocationPermissionResult(this, grantResults[0]);
                 }
                 return;
             }
