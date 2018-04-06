@@ -19,7 +19,7 @@
         android:layout_marginTop="16dp"
         android:scaleType="centerInside"
         android:src="@drawable/ic_store_black_24dp"
-        android:background="@android:color/darker_gray"/>
+        android:background="@drawable/icon_circle_bg"/>
 
     <LinearLayout
         android:id="@+id/lines_container"
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@android:color/tertiary_text_light"
-            android:text="Bruggestraat 75, Brugge" />
+            />
     </LinearLayout>
 
     <!-- Can be replaced by a widget -->

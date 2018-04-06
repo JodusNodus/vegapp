@@ -6,8 +6,10 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,10 +39,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     public static final String EXTRA_EAN = "EXTRA_EAN";
 
+    private CollapsingToolbarLayout collapsingToolbar;
     private FloatingActionButton favoriteBtn;
     private Button markInvalidBtn;
     private Button rateBtn;
-    private TextView productTitleView;
     private TextView productShortDetails;
     private RatingBar productRating;
     private ImageView coverImageView;
@@ -53,15 +55,20 @@ public class ProductDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 
+        collapsingToolbar = findViewById(R.id.collapsing_toolbar);
         favoriteBtn = findViewById(R.id.favorite_product_btn);
         markInvalidBtn = findViewById(R.id.mark_invalid_btn);
         rateBtn = findViewById(R.id.rate_product_btn);
 
-        productTitleView = findViewById(R.id.product_title);
         productShortDetails  = findViewById(R.id.product_short_details);
         productRating  = findViewById(R.id.product_rating);
         coverImageView = findViewById(R.id.product_cover_image_view);
         supermarketListView = findViewById(R.id.supermarkets_list);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         mViewModel = ViewModelProviders.of(this).get(ProductDetailsViewModel.class);
         mViewModel.setContext(this);
@@ -125,7 +132,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
     private void setProduct(Product p) {
-        productTitleView.setText(p.getProductName());
+        collapsingToolbar.setTitle(p.getProductName());
 
         productShortDetails.setText(String.format("Geplaatst door %s op %s", p.user.getName(), formatDate(p.creationdate)));
 

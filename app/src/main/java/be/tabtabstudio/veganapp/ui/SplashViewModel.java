@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import be.tabtabstudio.veganapp.data.VegRepository;
@@ -111,10 +112,10 @@ public class SplashViewModel extends ViewModel {
 
     public void handleLocationLoad(Location location) {
         if (location == null) {
-            Toast.makeText(getContext(), "Location set Failed", Toast.LENGTH_SHORT).show();
+            Log.i("location", "loc set failed");
             return;
         }
-        Toast.makeText(getContext(), "Location set Succesfull", Toast.LENGTH_SHORT).show();
+        Log.i("location", "loc set success");
         loadProductDetails();
     }
 
