@@ -42,16 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2">
-            <Button
-                android:id="@+id/add_to_cart_btn"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/action_product_in_cart"
-                android:backgroundTint="@android:color/transparent"
-                android:textColor="@color/colorPrimary"
-
-                android:layout_width="0pt" />
+            android:weightSum="1">
             <Button
                 android:id="@+id/mark_invalid_btn"
                 android:layout_weight="1"

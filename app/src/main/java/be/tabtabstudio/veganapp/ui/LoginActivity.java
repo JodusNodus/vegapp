@@ -38,6 +38,9 @@ public class LoginActivity extends AppCompatActivity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
+        mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        mViewModel.setContext(this);
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -53,12 +56,10 @@ public class LoginActivity extends AppCompatActivity {
             attemptLogin();
         });
 
-        mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
-
         mViewModel.getUserObservable().observe(this, new Observer<User>() {
             @Override
             public void onChanged(@Nullable User user) {
-                handleUserLoad(user);
+                mViewModel.handleUserLoad(user);
             }
         });
 
@@ -66,16 +67,6 @@ public class LoginActivity extends AppCompatActivity {
         mEmailView.setText("bob@debouwer.com");
         mPasswordView.setText("deusvult");
 
-    }
-
-    private void handleUserLoad(@Nullable User user) {
-        if (user != null) {
-            Toast.makeText(LoginActivity.this, "Login Succesfull", Toast.LENGTH_SHORT).show();
-            setResult(RESULT_OK);
-            finish();
-        } else {
-            Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void attemptLogin() {

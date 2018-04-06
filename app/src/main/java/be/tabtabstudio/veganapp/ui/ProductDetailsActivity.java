@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,12 +29,15 @@ import java.util.List;
 import java.util.Observable;
 
 import be.tabtabstudio.veganapp.R;
+import be.tabtabstudio.veganapp.data.entities.Favorites;
 import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.Supermarket;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
-    private Button addToBasketBtn;
+    public static final String EXTRA_EAN = "EXTRA_EAN";
+
+    private FloatingActionButton favoriteBtn;
     private Button markInvalidBtn;
     private TextView productTitleView;
     private TextView productShortDetails;
@@ -48,7 +52,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 
-        addToBasketBtn = findViewById(R.id.add_to_cart_btn);
+        favoriteBtn = findViewById(R.id.favorite_product_btn);
         markInvalidBtn = findViewById(R.id.mark_invalid_btn);
 
         productTitleView = findViewById(R.id.product_title);
@@ -58,13 +62,29 @@ public class ProductDetailsActivity extends AppCompatActivity {
         supermarketListView = findViewById(R.id.supermarkets_list);
 
         mViewModel = ViewModelProviders.of(this).get(ProductDetailsViewModel.class);
+        mViewModel.setContext(this);
 
-        addToBasketBtn.setOnClickListener((View v) -> {
-            mViewModel.handleAddToBasket();
+        favoriteBtn.setOnClickListener((View v) -> {
+            mViewModel.handleFavoriteProduct();
         });
+
         markInvalidBtn.setOnClickListener((View v) -> {
             mViewModel.handleMarkInvalid();
         });
+
+        long ean = getIntent().getLongExtra(EXTRA_EAN, -1);
+        if (ean == -1) {
+            finish();
+            return;
+        }
+
+        supermarketClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Integer index = (Integer) view.getTag();
+                mViewModel.handleSupermarketClick(index);
+            }
+        };
 
         mViewModel.getProductObservable().observe(this, new Observer<Product>() {
             @Override
@@ -83,13 +103,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         });
 
-        supermarketClickListener = new View.OnClickListener() {
+        mViewModel.getProductIsFavoriteObservable(ean).observe(this, new Observer<Boolean>() {
             @Override
-            public void onClick(View view) {
-                Integer index = (Integer) view.getTag();
-                mViewModel.handleSupermarketClick(ProductDetailsActivity.this, index);
+            public void onChanged(@Nullable Boolean productIsFavorite) {
+                Log.i("test", String.valueOf(productIsFavorite));
+                setFavoriteButtonState(productIsFavorite);
             }
-        };
+        });
+
+        mViewModel.fetchProduct(ean);
     }
 
     private String formatDate(Date date) {
@@ -97,20 +119,29 @@ public class ProductDetailsActivity extends AppCompatActivity {
         return dateFormat.format(date);
     }
 
-     private void setProduct(Product p) {
-         productTitleView.setText(p.getProductName());
+    private void setProduct(Product p) {
+        productTitleView.setText(p.getProductName());
 
-         productShortDetails.setText(String.format("Geplaatst door %s op %s", p.user.getName(), formatDate(p.creationdate)));
+        productShortDetails.setText(String.format("Geplaatst door %s op %s", p.user.getName(), formatDate(p.creationdate)));
 
-         productRating.setRating(p.rating);
+        productRating.setRating(p.rating);
 
-         Picasso.get().load(p.coverPicture).into(coverImageView);
+        Picasso.get().load(p.coverPicture).into(coverImageView);
 
-         if (p.userHasCorrected) {
-             markInvalidBtn.setEnabled(false);
-             markInvalidBtn.setAlpha(.5f);
-         }
-     }
+        if (p.userHasCorrected) {
+            disableButton(markInvalidBtn);
+        } else {
+            enableButton(markInvalidBtn);
+        }
+    }
+
+    private void setFavoriteButtonState(boolean productisFavorite) {
+        if (productisFavorite) {
+            favoriteBtn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+        } else {
+            favoriteBtn.setImageResource(R.drawable.ic_favorite_black_24dp);
+        }
+    }
 
     private void setSupermarkets(List<Supermarket> supermarkets) {
         // Clear items in view
@@ -155,4 +186,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
             return rowView;
         }
     }
+
+    private void enableButton(View btn) {
+        btn.setEnabled(true);
+        btn.setAlpha(1f);
+    }
+
+    private void disableButton(View btn) {
+        btn.setEnabled(false);
+        btn.setAlpha(.5f);
+    }
+
 }

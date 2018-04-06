@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,46 +19,51 @@ import be.tabtabstudio.veganapp.data.entities.Location;
 import be.tabtabstudio.veganapp.data.entities.User;
 
 public class SplashViewModel extends ViewModel {
-    public LiveData<Location> getLocationObservable() { return VegRepository.getInstance().getLocation(); }
-    public LiveData<User> getUserObservable() { return VegRepository.getInstance().getUser(); }
 
-    public void fetchProduct(long ean) {
-        VegRepository.getInstance().fetchProduct(ean);
+    private VegRepository repo;
+
+    @Override
+    public void setContext(Context context) {
+        super.setContext(context);
+        this.repo = VegRepository.getInstance(context);
     }
+
+    public LiveData<Location> getLocationObservable() { return repo.getLocationObservable(); }
+    public LiveData<User> getUserObservable() { return repo.getUserObservable(); }
 
     public void setLocation(double lat, double lng) {
-        VegRepository.getInstance().setLocation(new Location(lat, lng));
+        repo.setLocation(new Location(lat, lng));
     }
 
-    public void startLoading(SplashActivity context) {
-        loadUser(context);
+    public void startLoading() {
+        loadUser();
     }
 
-    private void loadUser(SplashActivity context) {
+    private void loadUser() {
         User user = getUserObservable().getValue();
 
         if (user == null) {
-            Intent k = new Intent(context, LoginActivity.class);
-            context.startActivityForResult(k, SplashActivity.USER_LOGIN_CODE);
+            Intent k = new Intent(getContext(), LoginActivity.class);
+            ((SplashActivity) getContext()).startActivityForResult(k, SplashActivity.USER_LOGIN_CODE);
         }
     }
 
-    public void handleUserLoad(SplashActivity context) {
+    public void handleUserLoad() {
         User user = getUserObservable().getValue();
-        loadLocation(context);
+        loadLocation();
     }
 
-    private void loadLocation(SplashActivity context) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestLocationPersmission(context);
+    private void loadLocation() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPersmission();
         } else {
-            startLocationListener(context);
+            startLocationListener();
         }
     }
 
-    private void requestLocationPersmission(SplashActivity context) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(context,
+    private void requestLocationPersmission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) getContext(),
                 Manifest.permission.READ_CONTACTS)) {
 
             // Show an explanation to the user *asynchronously* -- don't block
@@ -67,25 +71,25 @@ public class SplashViewModel extends ViewModel {
             // sees the explanation, try again to request the permission.
 
         } else {
-            ActivityCompat.requestPermissions(context,
+            ActivityCompat.requestPermissions((Activity) getContext(),
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                     SplashActivity.LOCATION_PERMISSON_CODE);
         }
     }
 
-    public void handleLocationPermissionResult(SplashActivity context, int result) {
+    public void handleLocationPermissionResult(int result) {
         // If request is cancelled, the result arrays are empty.
         if (result == PackageManager.PERMISSION_GRANTED) {
-            startLocationListener(context);
+            startLocationListener();
         } else {
-            Toast.makeText(context, "Pls dont deny", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Pls dont deny", Toast.LENGTH_SHORT).show();
         }
     }
 
     @SuppressLint("MissingPermission")
-    private void startLocationListener(SplashActivity context) {
-        context.showLoadingLocation();
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+    private void startLocationListener() {
+        ((SplashActivity) getContext()).showLoadingLocation();
+        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
         // Define a listener that responds to location updates
         LocationListener locationListener = new LocationListener() {
@@ -105,19 +109,21 @@ public class SplashViewModel extends ViewModel {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
 
-    public void handleLocationLoad(SplashActivity context, Location location) {
+    public void handleLocationLoad(Location location) {
         if (location == null) {
-            Toast.makeText(context, "Location set Failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Location set Failed", Toast.LENGTH_SHORT).show();
             return;
         }
-        Toast.makeText(context, "Location set Succesfull", Toast.LENGTH_SHORT).show();
-        loadProductDetails(context);
+        Toast.makeText(getContext(), "Location set Succesfull", Toast.LENGTH_SHORT).show();
+        loadProductDetails();
     }
 
-    private void loadProductDetails(SplashActivity context) {
-        Intent k = new Intent(context, ProductDetailsActivity.class);
-        context.startActivity(k);
-        fetchProduct(555555555555L);
+    private void loadProductDetails() {
+        Intent k = new Intent(getContext(), ProductDetailsActivity.class);
+        k.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        k.putExtra(ProductDetailsActivity.EXTRA_EAN, 555555555555L);
+        getContext().startActivity(k);
+        //((SplashActivity) getContext()).finish();
     }
 
 }

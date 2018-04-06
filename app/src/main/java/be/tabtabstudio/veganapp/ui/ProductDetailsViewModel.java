@@ -1,15 +1,11 @@
 package be.tabtabstudio.veganapp.ui;
 
-import android.app.Activity;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.Transformations;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -19,27 +15,51 @@ import be.tabtabstudio.veganapp.data.entities.Supermarket;
 
 public class ProductDetailsViewModel extends ViewModel {
 
+    private VegRepository repo;
+    private LiveData<Boolean> productIsFavorite;
+
+    @Override
+    public void setContext(Context context) {
+        super.setContext(context);
+        this.repo = VegRepository.getInstance(context);
+    }
+
     public LiveData<Product> getProductObservable() {
-        return VegRepository.getInstance().getProduct();
+        return repo.getProductObservable();
+    }
+    public LiveData<Boolean> getProductIsFavoriteObservable(long ean) {
+        return Transformations.map(repo.getFavoritesObservable(), (favorites) ->
+                favorites.findById(ean) != null);
     }
 
     public LiveData<List<Supermarket>> getSupermarketsObservable() {
-        return VegRepository.getInstance().getSupermarkets();
+        return repo.getSupermarketsObservable();
     }
 
-    public void handleAddToBasket() {
-
+    public void fetchProduct(long ean) {
+        repo.fetchProduct(ean);
     }
 
-    public void handleMarkInvalid() {
-        VegRepository repo = VegRepository.getInstance();
-        Product p = repo.getProduct().getValue();
+    public void handleFavoriteProduct() {
+        Product p = getProductObservable().getValue();
         if (p != null) {
-            repo.markProductInvalid(p.ean);
+            boolean isFavorite = repo.getFavoritesObservable().getValue().contains(p);
+            if (isFavorite) {
+                repo.removeFavorite(p);
+            } else {
+                repo.addFavorite(p);
+            }
         }
     }
 
-    public void handleSupermarketClick(Context context, int index) {
+    public void handleMarkInvalid() {
+        Product p = repo.getProductObservable().getValue();
+        if (p != null) {
+            repo.markProductInvalid(p);
+        }
+    }
+
+    public void handleSupermarketClick(int index) {
         List<Supermarket> supermarkets = getSupermarketsObservable().getValue();
         if (supermarkets == null) { return; }
         Supermarket sm = supermarkets.get(index);
@@ -51,8 +71,8 @@ public class ProductDetailsViewModel extends ViewModel {
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
 
-            if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
-                context.startActivity(mapIntent);
+            if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                getContext().startActivity(mapIntent);
             }
         } catch (Exception e) {
             e.printStackTrace();

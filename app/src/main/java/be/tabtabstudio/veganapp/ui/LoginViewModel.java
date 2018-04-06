@@ -1,26 +1,30 @@
 package be.tabtabstudio.veganapp.ui;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
-import android.support.annotation.Nullable;
-import android.util.Log;
+import android.widget.Toast;
 
 import be.tabtabstudio.veganapp.data.VegRepository;
-import be.tabtabstudio.veganapp.data.entities.Location;
-import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.User;
-import be.tabtabstudio.veganapp.data.network.ApiResponse;
-import be.tabtabstudio.veganapp.data.network.requestBodies.UserLoginBody;
-import be.tabtabstudio.veganapp.data.network.results.LoginResult;
 
-public class LoginViewModel extends ViewModel {
+import static android.app.Activity.RESULT_OK;
+
+public class LoginViewModel extends be.tabtabstudio.veganapp.ui.ViewModel {
 
     public LiveData<User> getUserObservable() {
-        return VegRepository.getInstance().getUser();
+        return VegRepository.getInstance(getContext()).getUserObservable();
     }
 
     public void attempLogin(String email, String password) {
-        VegRepository.getInstance().login(email, password);
+        VegRepository.getInstance(getContext()).login(email, password);
+    }
+
+    public void handleUserLoad(User user) {
+        if (user != null) {
+            Toast.makeText(getContext(), "Login Succesfull", Toast.LENGTH_SHORT).show();
+            ((LoginActivity) getContext()).setResult(RESULT_OK);
+            ((LoginActivity) getContext()).finish();
+        } else {
+            Toast.makeText(getContext(), "Login failed", Toast.LENGTH_SHORT).show();
+        }
     }
 }

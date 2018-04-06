@@ -3,12 +3,15 @@ package be.tabtabstudio.veganapp.ui;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -37,15 +40,16 @@ public class SplashActivity extends AppCompatActivity {
         loadingTextView = findViewById(R.id.loading_text_view);
 
         mViewModel = ViewModelProviders.of(this).get(SplashViewModel.class);
+        mViewModel.setContext(this);
 
         mViewModel.getLocationObservable().observe(this, new Observer<Location>() {
             @Override
             public void onChanged(@Nullable Location location) {
-                mViewModel.handleLocationLoad(SplashActivity.this, location);
+                mViewModel.handleLocationLoad(location);
             }
         });
 
-        mViewModel.startLoading(this);
+        mViewModel.startLoading();
     }
 
     public void showLoadingLocation() {
@@ -56,7 +60,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == USER_LOGIN_CODE && resultCode == RESULT_OK) {
-            mViewModel.handleUserLoad(this);
+            mViewModel.handleUserLoad();
         }
     }
 
@@ -65,7 +69,7 @@ public class SplashActivity extends AppCompatActivity {
         switch (requestCode) {
             case LOCATION_PERMISSON_CODE: {
                 if (grantResults.length > 0) {
-                    mViewModel.handleLocationPermissionResult(this, grantResults[0]);
+                    mViewModel.handleLocationPermissionResult(grantResults[0]);
                 }
                 return;
             }

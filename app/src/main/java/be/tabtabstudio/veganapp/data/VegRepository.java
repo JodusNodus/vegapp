@@ -2,14 +2,19 @@ package be.tabtabstudio.veganapp.data;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
+import android.content.Context;
 import android.util.Log;
 
 import java.util.List;
 
+import be.tabtabstudio.veganapp.AppExecutors;
+import be.tabtabstudio.veganapp.data.entities.Favorites;
 import be.tabtabstudio.veganapp.data.entities.Location;
 import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.Supermarket;
 import be.tabtabstudio.veganapp.data.entities.User;
+import be.tabtabstudio.veganapp.data.local.AppDatabase;
 import be.tabtabstudio.veganapp.data.network.ApiResponse;
 import be.tabtabstudio.veganapp.data.network.ApiService;
 import be.tabtabstudio.veganapp.data.network.ApiServiceFactory;
@@ -23,44 +28,68 @@ import retrofit2.Response;
 public class VegRepository {
     private static final String LOG_TAG = VegRepository.class.getSimpleName();
 
-    private static final VegRepository ourInstance = new VegRepository();
+    private static VegRepository sInstance;
 
-    private final MutableLiveData<Product> product;
-    private final MutableLiveData<List<Supermarket>> supermarkets;
-    private final MutableLiveData<User> user;
-
-    private final MutableLiveData<Location> location;
-
-    public static VegRepository getInstance() {
-        return ourInstance;
-    }
-
+    private final AppExecutors executors;
     private final ApiService api;
+    private final AppDatabase db;
+    private final MutableLiveData<Product> productData;
+    private final MutableLiveData<List<Supermarket>> supermarketsData;
+    private final MutableLiveData<User> userData;
+    private final MutableLiveData<Location> locationData;
+    private LiveData<Favorites> favoritesData;
 
-    private VegRepository() {
+    public static VegRepository getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = new VegRepository(context);
+        }
+        return sInstance;
+    }
+
+    private VegRepository(Context context) {
+        executors = AppExecutors.getInstance();
+        db = AppDatabase.getInstance(context);
         api = ApiServiceFactory.create();
-        product = new MutableLiveData<>();
-        user = new MutableLiveData<>();
-        supermarkets = new MutableLiveData<>();
-        location = new MutableLiveData<>();
+
+        productData = new MutableLiveData<>();
+        userData = new MutableLiveData<>();
+        supermarketsData = new MutableLiveData<>();
+        locationData = new MutableLiveData<>();
+
+        setFavoritesObservable();
     }
 
-    public LiveData<Location> getLocation() {
-        return location;
+    public LiveData<Location> getLocationObservable() {
+        return locationData;
     }
 
-    public LiveData<List<Supermarket>> getSupermarkets() {
-        return supermarkets;
+    public LiveData<List<Supermarket>> getSupermarketsObservable() {
+        return supermarketsData;
     }
 
-    public LiveData<Product> getProduct() {
-        return product;
+    public LiveData<Product> getProductObservable() {
+        return productData;
     }
 
-    public LiveData<User> getUser() {
-        return user;
+    public LiveData<User> getUserObservable() {
+        return userData;
     }
 
+    public LiveData<Favorites> getFavoritesObservable() {
+        return favoritesData;
+    }
+
+    private void setFavoritesObservable() {
+        executors.diskIO().execute(() -> {
+            LiveData<List<Product>> productListData = db.favoritesDao().getAll();
+
+            executors.mainThread().execute(() -> {
+                favoritesData = Transformations.map(productListData, (products) -> {
+                    return new Favorites(products);
+                });
+            });
+        });
+    }
 
     public void login(String email, String password) {
         UserLoginBody body = new UserLoginBody(email, password);
@@ -68,7 +97,7 @@ public class VegRepository {
             @Override
             public void onResponse(Call<ApiResponse<LoginResult>> call, Response<ApiResponse<LoginResult>> response) {
                 if (response.code() == 200) {
-                    user.setValue(response.body().result.user);
+                    userData.setValue(response.body().result.user);
                 }
             }
 
@@ -84,7 +113,7 @@ public class VegRepository {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.code() == 200) {
-                    location.setValue(loc);
+                    locationData.setValue(loc);
                 }
             }
 
@@ -96,12 +125,18 @@ public class VegRepository {
     }
 
     public void fetchProduct(long ean) {
+        executors.diskIO().execute(() -> {
+            Product product = db.favoritesDao().getById(ean);
+            if (product != null) {
+                productData.postValue(product);
+            }
+        });
         api.getProduct(ean).enqueue(new Callback<ApiResponse<GetProductResult>>() {
             @Override
             public void onResponse(Call<ApiResponse<GetProductResult>> call, Response<ApiResponse<GetProductResult>> response) {
                 if (response.code() == 200) {
-                    supermarkets.setValue(response.body().result.supermarkets);
-                    product.setValue(response.body().result.product);
+                    supermarketsData.setValue(response.body().result.supermarkets);
+                    productData.setValue(response.body().result.product);
                 }
             }
 
@@ -112,15 +147,14 @@ public class VegRepository {
         });
     }
 
-    public void markProductInvalid(long ean) {
-        api.markProductInvalid(ean).enqueue(new Callback<ApiResponse>() {
+    public void markProductInvalid(Product p) {
+        api.markProductInvalid(p.ean).enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.code() == 200) {
-                    Product p = product.getValue();
-                    if (p.ean == ean) {
+                    if (p == productData.getValue()) {
                         p.userHasCorrected = true;
-                        product.setValue(p);
+                        productData.setValue(p);
                     }
                 }
             }
@@ -129,6 +163,18 @@ public class VegRepository {
             public void onFailure(Call<ApiResponse> call, Throwable t) {
                 t.printStackTrace();
             }
+        });
+    }
+
+    public void addFavorite(Product product) {
+        executors.diskIO().execute(() -> {
+            db.favoritesDao().insert(product);
+        });
+    }
+
+    public void removeFavorite(Product product) {
+        executors.diskIO().execute(() -> {
+            db.favoritesDao().delete(product);
         });
     }
 }
