@@ -52,6 +52,10 @@ public class ProductDetailsViewModel extends ViewModel {
         }
     }
 
+    public void handleRateProduct() {
+
+    }
+
     public void handleMarkInvalid() {
         Product p = repo.getProductObservable().getValue();
         if (p != null) {

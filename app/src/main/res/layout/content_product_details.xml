@@ -42,7 +42,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="1">
+            android:weightSum="2">
+            <Button
+                android:id="@+id/rate_product_btn"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_width="0pt"
+                android:textColor="@color/colorPrimaryDark"
+                android:backgroundTint="@android:color/transparent"
+                android:text="@string/rate_product_action"/>
             <Button
                 android:id="@+id/mark_invalid_btn"
                 android:layout_weight="1"

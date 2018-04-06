@@ -39,6 +39,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private FloatingActionButton favoriteBtn;
     private Button markInvalidBtn;
+    private Button rateBtn;
     private TextView productTitleView;
     private TextView productShortDetails;
     private RatingBar productRating;
@@ -54,6 +55,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         favoriteBtn = findViewById(R.id.favorite_product_btn);
         markInvalidBtn = findViewById(R.id.mark_invalid_btn);
+        rateBtn = findViewById(R.id.rate_product_btn);
 
         productTitleView = findViewById(R.id.product_title);
         productShortDetails  = findViewById(R.id.product_short_details);
@@ -70,6 +72,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         markInvalidBtn.setOnClickListener((View v) -> {
             mViewModel.handleMarkInvalid();
+        });
+
+        rateBtn.setOnClickListener((View v) -> {
         });
 
         long ean = getIntent().getLongExtra(EXTRA_EAN, -1);

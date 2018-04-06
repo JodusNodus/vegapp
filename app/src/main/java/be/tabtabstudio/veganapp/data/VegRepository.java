@@ -18,6 +18,7 @@ import be.tabtabstudio.veganapp.data.local.AppDatabase;
 import be.tabtabstudio.veganapp.data.network.ApiResponse;
 import be.tabtabstudio.veganapp.data.network.ApiService;
 import be.tabtabstudio.veganapp.data.network.ApiServiceFactory;
+import be.tabtabstudio.veganapp.data.network.requestBodies.RateProductBody;
 import be.tabtabstudio.veganapp.data.network.requestBodies.UserLoginBody;
 import be.tabtabstudio.veganapp.data.network.results.GetProductResult;
 import be.tabtabstudio.veganapp.data.network.results.LoginResult;
@@ -175,6 +176,22 @@ public class VegRepository {
     public void removeFavorite(Product product) {
         executors.diskIO().execute(() -> {
             db.favoritesDao().delete(product);
+        });
+    }
+
+    public void rateProduct(Product p, int rating) {
+        api.rateProduct(p.ean, new RateProductBody(rating)).enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                if (response.code() == 200) {
+                    Log.i("repo", "Rate product success");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
         });
     }
 }
