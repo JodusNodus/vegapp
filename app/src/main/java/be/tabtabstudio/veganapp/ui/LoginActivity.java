@@ -21,10 +21,13 @@ import be.tabtabstudio.veganapp.data.entities.User;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private EditText mFirstname;
+    private EditText mLastname;
     private EditText mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Button mAlreadyRegisteredBtn;
 
     private LoginViewModel mViewModel;
 
@@ -32,11 +35,14 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mFirstname = findViewById(R.id.first_name);
+        mLastname = findViewById(R.id.last_name);
         mEmailView = findViewById(R.id.email);
         mPasswordView = findViewById(R.id.password);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        mAlreadyRegisteredBtn = findViewById(R.id.switch_to_login_btn);
 
         mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         mViewModel.setContext(this);
@@ -51,8 +57,17 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener((View v) -> {
+        Button mSignUpButton = findViewById(R.id.sign_up_btn);
+        mSignUpButton.setOnClickListener((View v) -> {
+            attemptSignup();
+        });
+
+        mAlreadyRegisteredBtn.setOnClickListener((View v) -> {
+            hideSignupFields();
+        });
+
+        Button mLoginButton = findViewById(R.id.login_btn);
+        mLoginButton.setOnClickListener((View v) -> {
             attemptLogin();
         });
 
@@ -62,17 +77,34 @@ public class LoginActivity extends AppCompatActivity {
                 mViewModel.handleUserLoad(user);
             }
         });
+    }
 
-        // Fast testing
-        mEmailView.setText("bob@debouwer.com");
-        mPasswordView.setText("deusvult");
+    private void hideSignupFields() {
+        mFirstname.setVisibility(EditText.GONE);
+        mLastname.setVisibility(EditText.GONE);
+        mAlreadyRegisteredBtn.setVisibility(View.GONE);
+    }
 
+    private void attemptSignup() {
+        mFirstname.setError(null);
+        mLastname.setError(null);
+        mEmailView.setError(null);
+        mPasswordView.setError(null);
+
+        String firstname = mFirstname.getText().toString();
+        String lastname = mLastname.getText().toString();
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+
+        mViewModel.attempSignup(firstname, lastname, email, password);
     }
 
     private void attemptLogin() {
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
+        String firstname = mFirstname.getText().toString();
+        String lastname = mLastname.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 

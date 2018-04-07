@@ -18,6 +18,10 @@ public class LoginViewModel extends be.tabtabstudio.veganapp.ui.ViewModel {
         VegRepository.getInstance(getContext()).login(email, password);
     }
 
+    public void attempSignup(String firstname, String lastname, String email, String password) {
+        VegRepository.getInstance(getContext()).signup(firstname, lastname, email, password);
+    }
+
     public void handleUserLoad(User user) {
         if (user != null) {
             Toast.makeText(getContext(), "Login Succesfull", Toast.LENGTH_SHORT).show();

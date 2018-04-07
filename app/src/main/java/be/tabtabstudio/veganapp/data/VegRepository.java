@@ -20,6 +20,7 @@ import be.tabtabstudio.veganapp.data.network.ApiService;
 import be.tabtabstudio.veganapp.data.network.ApiServiceFactory;
 import be.tabtabstudio.veganapp.data.network.requestBodies.RateProductBody;
 import be.tabtabstudio.veganapp.data.network.requestBodies.UserLoginBody;
+import be.tabtabstudio.veganapp.data.network.requestBodies.UserSignupBody;
 import be.tabtabstudio.veganapp.data.network.results.GetProductResult;
 import be.tabtabstudio.veganapp.data.network.results.LoginResult;
 import retrofit2.Call;
@@ -92,9 +93,8 @@ public class VegRepository {
         });
     }
 
-    public void login(String email, String password) {
-        UserLoginBody body = new UserLoginBody(email, password);
-        api.login(body).enqueue(new Callback<ApiResponse<LoginResult>>() {
+    public Callback<ApiResponse<LoginResult>> getLoginCallback() {
+        return new Callback<ApiResponse<LoginResult>>() {
             @Override
             public void onResponse(Call<ApiResponse<LoginResult>> call, Response<ApiResponse<LoginResult>> response) {
                 if (response.code() == 200) {
@@ -106,7 +106,17 @@ public class VegRepository {
             public void onFailure(Call<ApiResponse<LoginResult>> call, Throwable t) {
                 t.printStackTrace();
             }
-        });
+        };
+    }
+
+    public void login(String email, String password) {
+        UserLoginBody body = new UserLoginBody(email, password);
+        api.login(body).enqueue(getLoginCallback());
+    }
+
+    public void signup(String firstname, String lastname, String email, String password) {
+        UserSignupBody body = new UserSignupBody(firstname, lastname, email, password);
+        api.signup(body).enqueue(getLoginCallback());
     }
 
     public void setLocation(Location loc) {

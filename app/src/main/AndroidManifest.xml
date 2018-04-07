@@ -30,9 +30,6 @@
             android:name=".ui.ProductDetailsActivity"
             android:label="@string/title_activity_product_details"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.SignupActivity"
-            android:label="@string/title_activity_signup" />
         <activity android:name=".ui.MainActivity"></activity>
     </application>
 
