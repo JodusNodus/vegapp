@@ -42,6 +42,18 @@ public class SplashActivity extends AppCompatActivity {
         mViewModel = ViewModelProviders.of(this).get(SplashViewModel.class);
         mViewModel.setContext(this);
 
+        mViewModel.getUserObservable().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(@Nullable User user) {
+                if (user != null) {
+                    mViewModel.handleUserSuccess();
+                } else {
+                    mViewModel.handleUserFailed();
+                }
+            }
+        });
+
+
         mViewModel.getLocationObservable().observe(this, new Observer<Location>() {
             @Override
             public void onChanged(@Nullable Location location) {
@@ -60,7 +72,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == USER_LOGIN_CODE && resultCode == RESULT_OK) {
-            mViewModel.handleUserLoad();
         }
     }
 

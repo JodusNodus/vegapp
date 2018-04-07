@@ -5,6 +5,8 @@ import android.widget.Toast;
 
 import be.tabtabstudio.veganapp.data.VegRepository;
 import be.tabtabstudio.veganapp.data.entities.User;
+import be.tabtabstudio.veganapp.data.network.requestBodies.UserLoginBody;
+import be.tabtabstudio.veganapp.data.network.requestBodies.UserSignupBody;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -15,11 +17,11 @@ public class LoginViewModel extends be.tabtabstudio.veganapp.ui.ViewModel {
     }
 
     public void attempLogin(String email, String password) {
-        VegRepository.getInstance(getContext()).login(email, password);
+        VegRepository.getInstance(getContext()).login(new UserLoginBody(email, password));
     }
 
     public void attempSignup(String firstname, String lastname, String email, String password) {
-        VegRepository.getInstance(getContext()).signup(firstname, lastname, email, password);
+        VegRepository.getInstance(getContext()).signup(new UserSignupBody(firstname, lastname, email, password));
     }
 
     public void handleUserLoad(User user) {

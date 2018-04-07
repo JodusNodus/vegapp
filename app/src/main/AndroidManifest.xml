@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.SplashActivity" android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".ui.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +32,8 @@
             android:name=".ui.ProductDetailsActivity"
             android:label="@string/title_activity_product_details"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.MainActivity"></activity>
+        <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.SignupActivity" android:theme="@style/AppTheme.Login" android:launchMode="singleTask"></activity>
     </application>
 
 </manifest>

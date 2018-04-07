@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class VegRepository {
     private final AppExecutors executors;
     private final ApiService api;
     private final AppDatabase db;
+    private final SharedPreferences sp;
     private final MutableLiveData<Product> productData;
     private final MutableLiveData<List<Supermarket>> supermarketsData;
     private final MutableLiveData<User> userData;
@@ -52,6 +54,7 @@ public class VegRepository {
         executors = AppExecutors.getInstance();
         db = AppDatabase.getInstance(context);
         api = ApiServiceFactory.create();
+        sp = context.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
         productData = new MutableLiveData<>();
         userData = new MutableLiveData<>();
@@ -93,12 +96,31 @@ public class VegRepository {
         });
     }
 
-    public Callback<ApiResponse<LoginResult>> getLoginCallback() {
+    public UserLoginBody getPersistedLogin() {
+        String email = sp.getString("email", null);
+        String password = sp.getString("password", null);
+        if (email != null && password != null) {
+            return new UserLoginBody(email, password);
+        }
+        return null;
+    }
+
+    private void persistLogin(UserLoginBody userLoginBody) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("email", userLoginBody.email);
+        editor.putString("password", userLoginBody.password);
+        editor.commit();
+    }
+
+    public Callback<ApiResponse<LoginResult>> getLoginCallback(UserLoginBody userLoginBody) {
         return new Callback<ApiResponse<LoginResult>>() {
             @Override
             public void onResponse(Call<ApiResponse<LoginResult>> call, Response<ApiResponse<LoginResult>> response) {
                 if (response.code() == 200) {
+                    persistLogin(userLoginBody);
                     userData.setValue(response.body().result.user);
+                } else {
+                    userData.setValue(null);
                 }
             }
 
@@ -109,14 +131,12 @@ public class VegRepository {
         };
     }
 
-    public void login(String email, String password) {
-        UserLoginBody body = new UserLoginBody(email, password);
-        api.login(body).enqueue(getLoginCallback());
+    public void login(UserLoginBody userLoginBody) {
+        api.login(userLoginBody).enqueue(getLoginCallback(userLoginBody));
     }
 
-    public void signup(String firstname, String lastname, String email, String password) {
-        UserSignupBody body = new UserSignupBody(firstname, lastname, email, password);
-        api.signup(body).enqueue(getLoginCallback());
+    public void signup(UserSignupBody userSignupBody) {
+        api.signup(userSignupBody).enqueue(getLoginCallback(userSignupBody));
     }
 
     public void setLocation(Location loc) {

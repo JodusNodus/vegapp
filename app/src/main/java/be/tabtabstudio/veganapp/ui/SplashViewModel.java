@@ -18,6 +18,7 @@ import android.widget.Toast;
 import be.tabtabstudio.veganapp.data.VegRepository;
 import be.tabtabstudio.veganapp.data.entities.Location;
 import be.tabtabstudio.veganapp.data.entities.User;
+import be.tabtabstudio.veganapp.data.network.requestBodies.UserLoginBody;
 
 public class SplashViewModel extends ViewModel {
 
@@ -41,17 +42,27 @@ public class SplashViewModel extends ViewModel {
     }
 
     private void loadUser() {
-        User user = getUserObservable().getValue();
+        UserLoginBody userLoginBody = repo.getPersistedLogin();
 
-        if (user == null) {
-            Intent k = new Intent(getContext(), LoginActivity.class);
-            ((SplashActivity) getContext()).startActivityForResult(k, SplashActivity.USER_LOGIN_CODE);
+        if (userLoginBody != null) {
+            repo.login(userLoginBody);
+        } else {
+            openSignUpActivity();
         }
     }
 
-    public void handleUserLoad() {
+    private void openSignUpActivity() {
+        Intent k = new Intent(getContext(), SignupActivity.class);
+        ((SplashActivity) getContext()).startActivityForResult(k, SplashActivity.USER_LOGIN_CODE);
+    }
+
+    public void handleUserSuccess() {
         User user = getUserObservable().getValue();
         loadLocation();
+    }
+
+    public void handleUserFailed() {
+       openSignUpActivity();
     }
 
     private void loadLocation() {

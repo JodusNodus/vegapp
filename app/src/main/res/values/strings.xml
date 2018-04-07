@@ -10,7 +10,7 @@
     <string name="prompt_last_name">Achternaam</string>
     <string name="action_sign_in">Inloggen</string>
     <string name="action_sign_up">Registreer</string>
-    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_email">email is niet correct</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
@@ -28,5 +28,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="rate_product_action">beoordelen</string>
-    <string name="action_already_registered">Ik ben al geregistreerd</string>
+    <string name="action_member_already">Al geregistreerd? Login</string>
+    <string name="creating_account">Account aanmaken...</string>
+    <string name="signup_failed">Registratie onsuccesvol</string>
+    <string name="error_too_short">minstens 3 karakters</string>
+    <string name="error_password_wrong_length">moet tussen 4 en 30 karakters zijn</string>
 </resources>
