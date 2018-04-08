@@ -16,7 +16,6 @@ import be.tabtabstudio.veganapp.data.entities.Supermarket;
 public class ProductDetailsViewModel extends ViewModel {
 
     private VegRepository repo;
-    private LiveData<Boolean> productIsFavorite;
 
     @Override
     public void setContext(Context context) {

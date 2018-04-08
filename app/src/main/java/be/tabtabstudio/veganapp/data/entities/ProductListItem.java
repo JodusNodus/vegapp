@@ -40,9 +40,9 @@ public class ProductListItem {
 
     @Override
     public boolean equals(Object obj) {
-        try {
-            return ((Product) obj).ean == ean;
-        } catch(Exception e) {
+        if (obj instanceof ProductListItem) {
+            return ((ProductListItem) obj).ean == ean;
+        } else {
             return false;
         }
     }

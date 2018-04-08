@@ -1,6 +1,8 @@
 package be.tabtabstudio.veganapp.ui;
 
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +15,22 @@ import be.tabtabstudio.veganapp.R;
 import be.tabtabstudio.veganapp.data.entities.ProductListItem;
 import be.tabtabstudio.veganapp.ui.TabPageFragment.OnListFragmentInteractionListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MyTabPageRecyclerViewAdapter extends RecyclerView.Adapter<MyTabPageRecyclerViewAdapter.ViewHolder> {
 
-    private final List<ProductListItem> mValues;
+    private List<ProductListItem> mProducts;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyTabPageRecyclerViewAdapter(List<ProductListItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public MyTabPageRecyclerViewAdapter(OnListFragmentInteractionListener listener) {
+        mProducts = new ArrayList<>();
         mListener = listener;
+    }
+
+    public void updateList(List products) {
+        mProducts = products;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -34,12 +42,12 @@ public class MyTabPageRecyclerViewAdapter extends RecyclerView.Adapter<MyTabPage
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.productListItem = mValues.get(position);
+        holder.productListItem = mProducts.get(position);
         Picasso
                 .get()
                 .load(holder.productListItem.getThumbnail())
                 .into(holder.mThumbImageView);
-        holder.mContentView.setText(mValues.get(position).getProductName());
+        holder.mContentView.setText(mProducts.get(position).getProductName());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +63,7 @@ public class MyTabPageRecyclerViewAdapter extends RecyclerView.Adapter<MyTabPage
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mProducts.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

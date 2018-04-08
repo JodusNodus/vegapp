@@ -1,5 +1,7 @@
 package be.tabtabstudio.veganapp.data.entities;
 
+import be.tabtabstudio.veganapp.utilities.StringUtils;
+
 public class User {
     public static User getMock() {
         User u = new User();
@@ -14,6 +16,6 @@ public class User {
     public String lastname;
 
     public String getName() {
-        return firstname + " " + lastname.substring(0, 1);
+        return StringUtils.capitize(firstname) + " " + lastname.substring(0, 1).toUpperCase();
     }
 }

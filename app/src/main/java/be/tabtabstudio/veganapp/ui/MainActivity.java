@@ -1,5 +1,6 @@
 package be.tabtabstudio.veganapp.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,11 +27,15 @@ public class MainActivity extends AppCompatActivity implements TabPageFragment.O
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private Toolbar toolbar;
+    private TabPageViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mViewModel = ViewModelProviders.of(this).get(TabPageViewModel.class);
+        mViewModel.setContext(this);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -40,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements TabPageFragment.O
 
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        mViewModel.fetchProducts();
     }
 
     private void setupViewPager(ViewPager viewPager) {

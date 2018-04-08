@@ -23,6 +23,7 @@ import be.tabtabstudio.veganapp.data.network.requestBodies.RateProductBody;
 import be.tabtabstudio.veganapp.data.network.requestBodies.UserLoginBody;
 import be.tabtabstudio.veganapp.data.network.requestBodies.UserSignupBody;
 import be.tabtabstudio.veganapp.data.network.results.GetProductResult;
+import be.tabtabstudio.veganapp.data.network.results.GetProductsResult;
 import be.tabtabstudio.veganapp.data.network.results.LoginResult;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,6 +41,7 @@ public class VegRepository {
     private final MutableLiveData<Product> productData;
     private final MutableLiveData<List<Supermarket>> supermarketsData;
     private final MutableLiveData<User> userData;
+    private final MutableLiveData<List<Product>> productsData;
     private final MutableLiveData<Location> locationData;
     private LiveData<Favorites> favoritesData;
 
@@ -57,6 +59,7 @@ public class VegRepository {
         sp = context.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
         productData = new MutableLiveData<>();
+        productsData = new MutableLiveData<>();
         userData = new MutableLiveData<>();
         supermarketsData = new MutableLiveData<>();
         locationData = new MutableLiveData<>();
@@ -78,6 +81,10 @@ public class VegRepository {
 
     public LiveData<User> getUserObservable() {
         return userData;
+    }
+
+    public LiveData<List<Product>> getProductsObservable() {
+        return productsData;
     }
 
     public LiveData<Favorites> getFavoritesObservable() {
@@ -145,6 +152,8 @@ public class VegRepository {
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 if (response.code() == 200) {
                     locationData.setValue(loc);
+                } else {
+                    locationData.setValue(null);
                 }
             }
 
@@ -168,12 +177,34 @@ public class VegRepository {
                 if (response.code() == 200) {
                     supermarketsData.setValue(response.body().result.supermarkets);
                     productData.setValue(response.body().result.product);
+                } else {
+                    productData.setValue(null);
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse<GetProductResult>> call, Throwable t) {
                 t.printStackTrace();
+                productData.setValue(null);
+            }
+        });
+    }
+
+    public void fetchProducts(String searchQuery, int page) {
+        api.getProducts(searchQuery, page).enqueue(new Callback<ApiResponse<GetProductsResult>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<GetProductsResult>> call, Response<ApiResponse<GetProductsResult>> response) {
+                if (response.code() == 200) {
+                    productsData.setValue(response.body().result.products);
+                } else {
+                    productsData.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<GetProductsResult>> call, Throwable t) {
+                t.printStackTrace();
+                productsData.setValue(null);
             }
         });
     }

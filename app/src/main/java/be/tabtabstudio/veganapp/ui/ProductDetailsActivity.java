@@ -68,6 +68,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
         mViewModel = ViewModelProviders.of(this).get(ProductDetailsViewModel.class);
@@ -209,4 +210,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
         btn.setAlpha(.5f);
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }
