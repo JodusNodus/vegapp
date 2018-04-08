@@ -138,7 +138,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         productRating.setRating(p.rating);
 
-        Picasso.get().load(p.coverPicture).into(coverImageView);
+        Picasso.get().load(p.getCover()).into(coverImageView);
 
         if (p.userHasCorrected) {
             disableButton(markInvalidBtn);

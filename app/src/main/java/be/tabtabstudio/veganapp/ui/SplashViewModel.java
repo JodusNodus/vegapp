@@ -133,9 +133,7 @@ public class SplashViewModel extends ViewModel {
     private void loadProductDetails() {
         Intent k = new Intent(getContext(), MainActivity.class);
         k.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        k.putExtra(ProductDetailsActivity.EXTRA_EAN, 555555555555L);
         getContext().startActivity(k);
-        //((SplashActivity) getContext()).finish();
     }
 
 }

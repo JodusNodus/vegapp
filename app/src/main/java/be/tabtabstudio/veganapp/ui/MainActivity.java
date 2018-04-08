@@ -1,5 +1,6 @@
 package be.tabtabstudio.veganapp.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import be.tabtabstudio.veganapp.R;
+import be.tabtabstudio.veganapp.data.entities.ProductListItem;
 import be.tabtabstudio.veganapp.ui.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity implements TabPageFragment.OnListFragmentInteractionListener {
@@ -51,8 +53,10 @@ public class MainActivity extends AppCompatActivity implements TabPageFragment.O
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-
+    public void onListFragmentInteraction(ProductListItem item) {
+        Intent k = new Intent(this, ProductDetailsActivity.class);
+        k.putExtra(ProductDetailsActivity.EXTRA_EAN, item.ean);
+        startActivity(k);
     }
 
     static class ViewPagerAdapter extends FragmentPagerAdapter {

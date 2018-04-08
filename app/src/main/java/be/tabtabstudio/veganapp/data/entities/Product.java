@@ -18,13 +18,10 @@ import be.tabtabstudio.veganapp.data.local.LabelListConverters;
 import be.tabtabstudio.veganapp.utilities.StringUtils;
 
 @Entity(tableName = "favorites")
-public class Product {
+public class Product extends ProductListItem {
 
     public static Product getMock() {
-        Product p = new Product();
-        p.ean = 555555555555L;
-        p.name = "Speculoos";
-        p.brand = Brand.getMock();
+        Product p = ProductListItem.getMock();
         p.creationdate = new Date();
         p.user = User.getMock();
         p.rating = 4;
@@ -37,13 +34,6 @@ public class Product {
         }
         return p;
     }
-
-    @PrimaryKey
-    public long ean;
-    public String name;
-
-    @Embedded
-    public Brand brand;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @TypeConverters(DateConverters.class)
@@ -59,19 +49,4 @@ public class Product {
 
     @TypeConverters(LabelListConverters.class)
     public List<Label> labels;
-
-    @Ignore
-    @JsonIgnore
-    public String getProductName() {
-        return StringUtils.capitize(brand.brandname) + " " + StringUtils.capitize(name);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        try {
-            return ((Product) obj).ean == ean;
-        } catch(Exception e) {
-            return false;
-        }
-    }
 }
