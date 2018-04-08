@@ -122,7 +122,7 @@ public class SignupActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // disable going back to the MainActivity
+        // disable going back
         moveTaskToBack(true);
     }
 
