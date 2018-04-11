@@ -39,7 +39,8 @@ public class VegRepository {
     private final SharedPreferences sp;
     private final MutableLiveData<Product> productData;
     private final MutableLiveData<User> userData;
-    private final MutableLiveData<List<Product>> productsData;
+    private final MutableLiveData<List<Product>> searchProductsData;
+    private final MutableLiveData<List<Product>> newProductsData;
     private final MutableLiveData<Location> locationData;
     private LiveData<Favorites> favoritesData;
 
@@ -57,7 +58,8 @@ public class VegRepository {
         sp = context.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
         productData = new MutableLiveData<>();
-        productsData = new MutableLiveData<>();
+        searchProductsData = new MutableLiveData<>();
+        newProductsData = new MutableLiveData<>();
         userData = new MutableLiveData<>();
         locationData = new MutableLiveData<>();
 
@@ -76,8 +78,12 @@ public class VegRepository {
         return userData;
     }
 
-    public LiveData<List<Product>> getProductsObservable() {
-        return productsData;
+    public LiveData<List<Product>> getNewProductsObservable() {
+        return newProductsData;
+    }
+
+    public LiveData<List<Product>> getSearchProductsObservable() {
+        return searchProductsData;
     }
 
     public LiveData<Favorites> getFavoritesObservable() {
@@ -182,23 +188,31 @@ public class VegRepository {
         });
     }
 
-    public void fetchProducts(String searchQuery, int size, int page) {
-        api.getProducts(searchQuery, size, page).enqueue(new Callback<GetProductsResult>() {
+    private Callback<GetProductsResult> createProductsCallback(MutableLiveData<List<Product>> liveData) {
+        return new Callback<GetProductsResult>() {
             @Override
             public void onResponse(Call<GetProductsResult> call, Response<GetProductsResult> response) {
                 if (response.code() == 200) {
-                    productsData.setValue(response.body().products);
+                    liveData.setValue(response.body().products);
                 } else {
-                    productsData.setValue(null);
+                    liveData.setValue(null);
                 }
             }
 
             @Override
             public void onFailure(Call<GetProductsResult> call, Throwable t) {
                 t.printStackTrace();
-                productsData.setValue(null);
+                liveData.setValue(null);
             }
-        });
+        };
+    }
+
+    public void searchProducts(String searchQuery, int size, int page) {
+        api.getProducts(searchQuery, "none", size, page).enqueue(createProductsCallback(searchProductsData));
+    }
+
+    public void fetchNewProducts(int size, int page) {
+        api.getProducts(null, "creationdate", size, page).enqueue(createProductsCallback(newProductsData));
     }
 
     public void markProductInvalid(Product p) {

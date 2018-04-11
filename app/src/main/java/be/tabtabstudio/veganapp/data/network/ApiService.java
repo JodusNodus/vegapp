@@ -31,7 +31,7 @@ public interface ApiService {
     Call<Void> setLocation(@Body Location location);
 
     @GET("api/products")
-    Call<GetProductsResult> getProducts(@Query("searchquery") String searchquery, @Query("size") int size, @Query("page") int page);
+    Call<GetProductsResult> getProducts(@Query("searchquery") String searchquery, @Query("orderby") String orderby, @Query("size") int size, @Query("page") int page);
 
     @GET("api/products/{ean}")
     Call<GetProductResult> getProduct(@Path("ean") long ean);

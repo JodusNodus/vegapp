@@ -22,8 +22,11 @@ import java.util.List;
 
 public class TabPageFragment extends Fragment {
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private int mColumnCount = 2;
+    public static final String ARG_COLUMN_COUNT = "column-count";
+    public static final String ARG_DATA = "data";
+    public static final String NEW_PAGE = "new";
+    public static final String SEARCH_PAGE = "search";
+    private int mColumnCount;
     private OnListFragmentInteractionListener mListener;
     private TabPageViewModel mViewModel;
     private MyTabPageRecyclerViewAdapter adapter;
@@ -34,9 +37,6 @@ public class TabPageFragment extends Fragment {
     @SuppressWarnings("unused")
     public static TabPageFragment newInstance(int columnCount) {
         TabPageFragment fragment = new TabPageFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -69,15 +69,24 @@ public class TabPageFragment extends Fragment {
             recyclerView.setAdapter(adapter);
         }
 
-        mViewModel.getProductsObservable().observe(this, new Observer<List<Product>>() {
+        Observer<List<Product>> observer = new Observer<List<Product>>() {
             @Override
             public void onChanged(@Nullable List<Product> products) {
                 if (products != null && adapter != null) {
                     adapter.updateList(products);
                 }
             }
-        });
-        mViewModel.fetchProducts();
+        };
+
+        switch (getArguments().getString(ARG_DATA)) {
+            case NEW_PAGE:
+                mViewModel.getNewProductsObservable().observe(this, observer);
+                mViewModel.fetchNewProducts();
+                break;
+            case SEARCH_PAGE:
+                mViewModel.getSearchProductsObservable().observe(this, observer);
+                break;
+        }
 
         return view;
     }

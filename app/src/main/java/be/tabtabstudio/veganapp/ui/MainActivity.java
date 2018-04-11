@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -49,19 +50,33 @@ public class MainActivity extends AppCompatActivity implements TabPageFragment.O
         viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
+        tabLayout = findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
         searchBar = findViewById(R.id.searchBar);
         searchBar.setOnSearchActionListener(this);
         lastSearches = new ArrayList<>();
         searchBar.setLastSuggestions(lastSearches);
 
-        tabLayout = findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        setupSearchFragment();
+    }
+
+    private void setupSearchFragment() {
+        Fragment tabPageFragment = new TabPageFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(TabPageFragment.ARG_DATA, TabPageFragment.SEARCH_PAGE);
+        bundle.putInt(TabPageFragment.ARG_COLUMN_COUNT, 2);
+        tabPageFragment.setArguments(bundle);
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.search_placeholder, tabPageFragment);
+        ft.commit();
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        List<String> resArray = Arrays.asList("page1", "page2", "page3", "page4", "page5", "page6");
+        List<String> resArray = Arrays.asList(TabPageFragment.NEW_PAGE, "page2", "page3", "page4", "page5", "page6");
         for (int i = 0; i < resArray.size(); i++) {
             adapter.addFrag(new TabPageFragment(), resArray.get(i));
         }
@@ -78,15 +93,16 @@ public class MainActivity extends AppCompatActivity implements TabPageFragment.O
     @Override
     public void onSearchStateChanged(boolean enabled) {
         if (enabled) {
+            viewPager.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
         } else {
+            viewPager.setVisibility(View.VISIBLE);
             tabLayout.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onSearchConfirmed(CharSequence text) {
-        Toast.makeText(MainActivity.this, "Go " + text.toString(), Toast.LENGTH_SHORT).show();
         mViewModel.searchProducts(text.toString());
     }
 
@@ -119,6 +135,10 @@ public class MainActivity extends AppCompatActivity implements TabPageFragment.O
         }
 
         public void addFrag(Fragment fragment, String title) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(TabPageFragment.ARG_COLUMN_COUNT, 2);
+            bundle.putString(TabPageFragment.ARG_DATA, title);
+            fragment.setArguments(bundle);
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }

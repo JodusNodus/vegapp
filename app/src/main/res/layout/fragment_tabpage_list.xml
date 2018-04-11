@@ -6,8 +6,7 @@
     android:name="be.tabtabstudio.veganapp.ui.TabPageFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:background="@android:color/background_light"
     app:layoutManager="LinearLayoutManager"
     tools:context=".ui.TabPageFragment"
     tools:listitem="@layout/fragment_tabpage" />

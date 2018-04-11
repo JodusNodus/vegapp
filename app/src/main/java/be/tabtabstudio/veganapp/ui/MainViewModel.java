@@ -14,6 +14,6 @@ public class MainViewModel extends ViewModel {
     }
 
     public void searchProducts(String searchquery) {
-        repo.fetchProducts(searchquery, 20, 1);
+        repo.searchProducts(searchquery, 20, 1);
     }
 }

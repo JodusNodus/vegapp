@@ -17,11 +17,15 @@ public class TabPageViewModel extends ViewModel {
         this.repo = VegRepository.getInstance(context);
     }
 
-    public LiveData<List<Product>> getProductsObservable() {
-        return repo.getProductsObservable();
+    public LiveData<List<Product>> getNewProductsObservable() {
+        return repo.getNewProductsObservable();
     }
 
-    public void fetchProducts() {
-        repo.fetchProducts("speculoos", 20, 1);
+    public LiveData<List<Product>> getSearchProductsObservable() {
+        return repo.getSearchProductsObservable();
+    }
+
+    public void fetchNewProducts() {
+        repo.fetchNewProducts(20, 1);
     }
 }
