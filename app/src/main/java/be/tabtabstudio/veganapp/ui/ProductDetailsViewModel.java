@@ -5,10 +5,12 @@ import android.arch.lifecycle.Transformations;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.Toast;
 
 import java.net.URLEncoder;
 import java.util.List;
 
+import be.tabtabstudio.veganapp.R;
 import be.tabtabstudio.veganapp.data.VegRepository;
 import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.Supermarket;
@@ -41,8 +43,10 @@ public class ProductDetailsViewModel extends ViewModel {
             boolean isFavorite = repo.getFavoritesObservable().getValue().contains(p);
             if (isFavorite) {
                 repo.removeFavorite(p);
+                Toast.makeText(getContext(), R.string.removed_from_favorites, Toast.LENGTH_SHORT).show();
             } else {
                 repo.addFavorite(p);
+                Toast.makeText(getContext(), R.string.added_to_favorites, Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -13,28 +13,34 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.mancj.materialsearchbar.MaterialSearchBar;
+
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import be.tabtabstudio.veganapp.R;
 import be.tabtabstudio.veganapp.data.entities.ProductListItem;
-import be.tabtabstudio.veganapp.ui.dummy.DummyContent;
 
-public class MainActivity extends AppCompatActivity implements TabPageFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements TabPageFragment.OnListFragmentInteractionListener, MaterialSearchBar.OnSearchActionListener {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private Toolbar toolbar;
-    private TabPageViewModel mViewModel;
+    private MainViewModel mViewModel;
+    private MaterialSearchBar searchBar;
+    private AbstractList<String> lastSearches;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mViewModel = ViewModelProviders.of(this).get(TabPageViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mViewModel.setContext(this);
 
         toolbar = findViewById(R.id.toolbar);
@@ -43,10 +49,13 @@ public class MainActivity extends AppCompatActivity implements TabPageFragment.O
         viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
+        searchBar = findViewById(R.id.searchBar);
+        searchBar.setOnSearchActionListener(this);
+        lastSearches = new ArrayList<>();
+        searchBar.setLastSuggestions(lastSearches);
+
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-        mViewModel.fetchProducts();
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -64,6 +73,31 @@ public class MainActivity extends AppCompatActivity implements TabPageFragment.O
         Intent k = new Intent(this, ProductDetailsActivity.class);
         k.putExtra(ProductDetailsActivity.EXTRA_EAN, item.ean);
         startActivity(k);
+    }
+
+    @Override
+    public void onSearchStateChanged(boolean enabled) {
+        if (enabled) {
+            tabLayout.setVisibility(View.GONE);
+        } else {
+            tabLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onSearchConfirmed(CharSequence text) {
+        Toast.makeText(MainActivity.this, "Go " + text.toString(), Toast.LENGTH_SHORT).show();
+        mViewModel.searchProducts(text.toString());
+    }
+
+    @Override
+    public void onButtonClicked(int buttonCode) {
+        switch (buttonCode){
+        }
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
     }
 
     static class ViewPagerAdapter extends FragmentPagerAdapter {

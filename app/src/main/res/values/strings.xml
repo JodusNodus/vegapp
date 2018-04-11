@@ -34,4 +34,7 @@
     <string name="error_too_short">minstens 3 karakters</string>
     <string name="error_password_wrong_length">moet tussen 4 en 30 karakters zijn</string>
     <string name="title_activity_main">Home</string>
+    <string name="added_to_favorites">Toegevoegd aan favorieten</string>
+    <string name="removed_from_favorites">Verwijderd uit favorieten</string>
+    <string name="action_search">Zoeken</string>
 </resources>

@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import be.tabtabstudio.veganapp.R;
 import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.ProductListItem;
-import be.tabtabstudio.veganapp.ui.dummy.DummyContent;
 
 import java.util.List;
 
@@ -50,20 +49,12 @@ public class TabPageFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-
-        mViewModel.getProductsObservable().observe(this, new Observer<List<Product>>() {
-            @Override
-            public void onChanged(@Nullable List<Product> products) {
-                if (products != null && adapter != null) {
-                    adapter.updateList(products);
-                }
-            }
-        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_tabpage_list, container, false);
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -77,6 +68,17 @@ public class TabPageFragment extends Fragment {
             adapter = new MyTabPageRecyclerViewAdapter(mListener);
             recyclerView.setAdapter(adapter);
         }
+
+        mViewModel.getProductsObservable().observe(this, new Observer<List<Product>>() {
+            @Override
+            public void onChanged(@Nullable List<Product> products) {
+                if (products != null && adapter != null) {
+                    adapter.updateList(products);
+                }
+            }
+        });
+        mViewModel.fetchProducts();
+
         return view;
     }
 
