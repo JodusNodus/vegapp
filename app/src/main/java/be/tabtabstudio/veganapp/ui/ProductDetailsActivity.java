@@ -107,15 +107,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 }
             }
         });
-        mViewModel.getSupermarketsObservable().observe(this, new Observer<List<Supermarket>>() {
-            @Override
-            public void onChanged(@Nullable List<Supermarket> supermarkets) {
-                if (supermarkets != null) {
-                    setSupermarkets(supermarkets);
-                }
-            }
-        });
-
         mViewModel.getProductIsFavoriteObservable(ean).observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean productIsFavorite) {
@@ -139,13 +130,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         productRating.setRating(p.rating);
 
-        Picasso.get().load(p.getCover()).into(coverImageView);
+        Picasso.get().load(p.coverPicture).into(coverImageView);
 
         if (p.userHasCorrected) {
             disableButton(markInvalidBtn);
         } else {
             enableButton(markInvalidBtn);
         }
+
+        setSupermarkets(p.supermarkets);
     }
 
     private void setFavoriteButtonState(boolean productisFavorite) {

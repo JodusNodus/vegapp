@@ -45,7 +45,7 @@ public class MyTabPageRecyclerViewAdapter extends RecyclerView.Adapter<MyTabPage
         holder.productListItem = mProducts.get(position);
         Picasso
                 .get()
-                .load(holder.productListItem.getThumbnail())
+                .load(holder.productListItem.thumbPicture)
                 .into(holder.mThumbImageView);
         holder.mContentView.setText(mProducts.get(position).getProductName());
 

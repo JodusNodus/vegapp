@@ -16,7 +16,6 @@ import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.Supermarket;
 import be.tabtabstudio.veganapp.data.entities.User;
 import be.tabtabstudio.veganapp.data.local.AppDatabase;
-import be.tabtabstudio.veganapp.data.network.ApiResponse;
 import be.tabtabstudio.veganapp.data.network.ApiService;
 import be.tabtabstudio.veganapp.data.network.ApiServiceFactory;
 import be.tabtabstudio.veganapp.data.network.requestBodies.RateProductBody;
@@ -39,7 +38,6 @@ public class VegRepository {
     private final AppDatabase db;
     private final SharedPreferences sp;
     private final MutableLiveData<Product> productData;
-    private final MutableLiveData<List<Supermarket>> supermarketsData;
     private final MutableLiveData<User> userData;
     private final MutableLiveData<List<Product>> productsData;
     private final MutableLiveData<Location> locationData;
@@ -61,7 +59,6 @@ public class VegRepository {
         productData = new MutableLiveData<>();
         productsData = new MutableLiveData<>();
         userData = new MutableLiveData<>();
-        supermarketsData = new MutableLiveData<>();
         locationData = new MutableLiveData<>();
 
         setFavoritesObservable();
@@ -69,10 +66,6 @@ public class VegRepository {
 
     public LiveData<Location> getLocationObservable() {
         return locationData;
-    }
-
-    public LiveData<List<Supermarket>> getSupermarketsObservable() {
-        return supermarketsData;
     }
 
     public LiveData<Product> getProductObservable() {
@@ -119,20 +112,20 @@ public class VegRepository {
         editor.commit();
     }
 
-    public Callback<ApiResponse<LoginResult>> getLoginCallback(UserLoginBody userLoginBody) {
-        return new Callback<ApiResponse<LoginResult>>() {
+    public Callback<LoginResult> getLoginCallback(UserLoginBody userLoginBody) {
+        return new Callback<LoginResult>() {
             @Override
-            public void onResponse(Call<ApiResponse<LoginResult>> call, Response<ApiResponse<LoginResult>> response) {
+            public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
                 if (response.code() == 200) {
                     persistLogin(userLoginBody);
-                    userData.setValue(response.body().result.user);
+                    userData.setValue(response.body().user);
                 } else {
                     userData.setValue(null);
                 }
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<LoginResult>> call, Throwable t) {
+            public void onFailure(Call<LoginResult> call, Throwable t) {
                 t.printStackTrace();
             }
         };
@@ -147,9 +140,9 @@ public class VegRepository {
     }
 
     public void setLocation(Location loc) {
-        api.setLocation(loc).enqueue(new Callback<ApiResponse>() {
+        api.setLocation(loc).enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.code() == 200) {
                     locationData.setValue(loc);
                 } else {
@@ -158,7 +151,7 @@ public class VegRepository {
             }
 
             @Override
-            public void onFailure(Call<ApiResponse> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -171,38 +164,37 @@ public class VegRepository {
                 productData.postValue(product);
             }
         });
-        api.getProduct(ean).enqueue(new Callback<ApiResponse<GetProductResult>>() {
+        api.getProduct(ean).enqueue(new Callback<GetProductResult>() {
             @Override
-            public void onResponse(Call<ApiResponse<GetProductResult>> call, Response<ApiResponse<GetProductResult>> response) {
+            public void onResponse(Call<GetProductResult> call, Response<GetProductResult> response) {
                 if (response.code() == 200) {
-                    supermarketsData.setValue(response.body().result.supermarkets);
-                    productData.setValue(response.body().result.product);
+                    productData.setValue(response.body().product);
                 } else {
                     productData.setValue(null);
                 }
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<GetProductResult>> call, Throwable t) {
+            public void onFailure(Call<GetProductResult> call, Throwable t) {
                 t.printStackTrace();
                 productData.setValue(null);
             }
         });
     }
 
-    public void fetchProducts(String searchQuery, int page) {
-        api.getProducts(searchQuery, page).enqueue(new Callback<ApiResponse<GetProductsResult>>() {
+    public void fetchProducts(String searchQuery, int size, int page) {
+        api.getProducts(searchQuery, size, page).enqueue(new Callback<GetProductsResult>() {
             @Override
-            public void onResponse(Call<ApiResponse<GetProductsResult>> call, Response<ApiResponse<GetProductsResult>> response) {
+            public void onResponse(Call<GetProductsResult> call, Response<GetProductsResult> response) {
                 if (response.code() == 200) {
-                    productsData.setValue(response.body().result.products);
+                    productsData.setValue(response.body().products);
                 } else {
                     productsData.setValue(null);
                 }
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<GetProductsResult>> call, Throwable t) {
+            public void onFailure(Call<GetProductsResult> call, Throwable t) {
                 t.printStackTrace();
                 productsData.setValue(null);
             }
@@ -210,9 +202,9 @@ public class VegRepository {
     }
 
     public void markProductInvalid(Product p) {
-        api.markProductInvalid(p.ean).enqueue(new Callback<ApiResponse>() {
+        api.markProductInvalid(p.ean).enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.code() == 200) {
                     if (p == productData.getValue()) {
                         p.userHasCorrected = true;
@@ -222,7 +214,7 @@ public class VegRepository {
             }
 
             @Override
-            public void onFailure(Call<ApiResponse> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -241,16 +233,16 @@ public class VegRepository {
     }
 
     public void rateProduct(Product p, int rating) {
-        api.rateProduct(p.ean, new RateProductBody(rating)).enqueue(new Callback<ApiResponse>() {
+        api.rateProduct(p.ean, new RateProductBody(rating)).enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.code() == 200) {
                     Log.i("repo", "Rate product success");
                 }
             }
 
             @Override
-            public void onFailure(Call<ApiResponse> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 t.printStackTrace();
             }
         });

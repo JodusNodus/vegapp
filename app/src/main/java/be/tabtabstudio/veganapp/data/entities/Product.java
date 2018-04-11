@@ -15,6 +15,7 @@ import java.util.List;
 
 import be.tabtabstudio.veganapp.data.local.DateConverters;
 import be.tabtabstudio.veganapp.data.local.LabelListConverters;
+import be.tabtabstudio.veganapp.data.local.SupermarketListConverters;
 import be.tabtabstudio.veganapp.utilities.StringUtils;
 
 @Entity(tableName = "favorites")
@@ -25,7 +26,7 @@ public class Product extends ProductListItem {
         p.creationdate = new Date();
         p.user = User.getMock();
         p.rating = 4;
-        p.thumbPicture = "https://storage.googleapis.com/vegstorage/thumb-555555555555";
+        p.userRating = 3;
         p.coverPicture = "https://storage.googleapis.com/vegstorage/cover-555555555555";
         p.userHasCorrected = true;
         p.labels = new ArrayList<>();
@@ -43,10 +44,13 @@ public class Product extends ProductListItem {
     public User user;
 
     public int rating;
+    public int userRating;
     public boolean userHasCorrected;
     public String coverPicture;
-    public String thumbPicture;
 
     @TypeConverters(LabelListConverters.class)
     public List<Label> labels;
+
+    @TypeConverters(SupermarketListConverters.class)
+    public List<Supermarket> supermarkets;
 }

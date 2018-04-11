@@ -14,12 +14,14 @@ public class ProductListItem {
         p.ean = 555555555555L;
         p.name = "Speculoos";
         p.brand = Brand.getMock();
+        p.thumbPicture = "https://storage.googleapis.com/vegstorage/thumb-555555555555";
         return p;
     }
 
     @PrimaryKey
     public long ean;
     public String name;
+    public String thumbPicture;
 
     @Embedded
     public Brand brand;
@@ -27,15 +29,7 @@ public class ProductListItem {
     @Ignore
     @JsonIgnore
     public String getProductName() {
-        return StringUtils.capitize(brand.brandname) + " " + StringUtils.capitize(name);
-    }
-
-    public String getCover() {
-        return "https://storage.googleapis.com/vegstorage/cover-" + ean;
-    }
-
-    public String getThumbnail() {
-        return "https://storage.googleapis.com/vegstorage/thumb-" + ean;
+        return StringUtils.capitize(brand.name) + " " + StringUtils.capitize(name);
     }
 
     @Override

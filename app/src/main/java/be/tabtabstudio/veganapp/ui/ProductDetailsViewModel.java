@@ -31,10 +31,6 @@ public class ProductDetailsViewModel extends ViewModel {
                 favorites.findById(ean) != null);
     }
 
-    public LiveData<List<Supermarket>> getSupermarketsObservable() {
-        return repo.getSupermarketsObservable();
-    }
-
     public void fetchProduct(long ean) {
         repo.fetchProduct(ean);
     }
@@ -63,9 +59,9 @@ public class ProductDetailsViewModel extends ViewModel {
     }
 
     public void handleSupermarketClick(int index) {
-        List<Supermarket> supermarkets = getSupermarketsObservable().getValue();
-        if (supermarkets == null) { return; }
-        Supermarket sm = supermarkets.get(index);
+        Product product = getProductObservable().getValue();
+        if (product == null) { return; }
+        Supermarket sm = product.supermarkets.get(index);
         if (sm == null) { return; }
 
         try {

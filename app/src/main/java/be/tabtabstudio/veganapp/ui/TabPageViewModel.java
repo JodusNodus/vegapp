@@ -22,6 +22,6 @@ public class TabPageViewModel extends ViewModel {
     }
 
     public void fetchProducts() {
-        repo.fetchProducts("sap", 1);
+        repo.fetchProducts("speculoos", 20, 1);
     }
 }
