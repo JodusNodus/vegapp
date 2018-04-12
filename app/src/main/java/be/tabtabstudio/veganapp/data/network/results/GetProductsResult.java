@@ -6,7 +6,9 @@ import java.util.List;
 
 import be.tabtabstudio.veganapp.data.entities.Product;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class GetProductsResult implements ApiResult {
     public List<Product> products;
+    public long total;
+    public int page;
+    public int size;
 }

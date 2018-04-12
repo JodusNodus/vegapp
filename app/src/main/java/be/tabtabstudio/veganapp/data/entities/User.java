@@ -18,4 +18,13 @@ public class User {
     public String getName() {
         return StringUtils.capitize(firstname) + " " + lastname.substring(0, 1).toUpperCase();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User) {
+            return ((User) obj).userid == userid;
+        } else {
+            return false;
+        }
+    }
 }

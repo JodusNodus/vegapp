@@ -8,7 +8,7 @@ import android.content.Context;
 import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.User;
 
-@Database(entities = { Product.class }, version = 2)
+@Database(entities = { Product.class }, version = 3)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "vegdb";

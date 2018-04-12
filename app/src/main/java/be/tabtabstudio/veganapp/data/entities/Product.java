@@ -25,7 +25,6 @@ public class Product extends ProductListItem {
         Product p = ProductListItem.getMock();
         p.creationdate = new Date();
         p.user = User.getMock();
-        p.rating = 4;
         p.userRating = 3;
         p.coverPicture = "https://storage.googleapis.com/vegstorage/cover-555555555555";
         p.userHasCorrected = true;
@@ -43,7 +42,6 @@ public class Product extends ProductListItem {
     @Embedded
     public User user;
 
-    public int rating;
     public int userRating;
     public boolean userHasCorrected;
     public String coverPicture;

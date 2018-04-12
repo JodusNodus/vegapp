@@ -10,4 +10,13 @@ public class Retailchain {
 
     public int retailchainid;
     public String name;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Retailchain) {
+            return ((Retailchain) obj).retailchainid == retailchainid;
+        } else {
+            return false;
+        }
+    }
 }

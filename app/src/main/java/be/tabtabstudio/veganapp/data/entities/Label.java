@@ -10,4 +10,13 @@ public class Label {
 
     public int labelid;
     public String name;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Label) {
+            return ((Label) obj).labelid == labelid;
+        } else {
+            return false;
+        }
+    }
 }

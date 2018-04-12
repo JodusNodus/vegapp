@@ -15,6 +15,8 @@ public class ProductListItem {
         p.name = "Speculoos";
         p.brand = Brand.getMock();
         p.thumbPicture = "https://storage.googleapis.com/vegstorage/thumb-555555555555";
+        p.rating = 3;
+        p.hits = 452;
         return p;
     }
 
@@ -22,6 +24,8 @@ public class ProductListItem {
     public long ean;
     public String name;
     public String thumbPicture;
+    public int rating;
+    public long hits;
 
     @Embedded
     public Brand brand;

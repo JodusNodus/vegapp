@@ -7,10 +7,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.util.HashMap;
 import java.util.List;
 
 import be.tabtabstudio.veganapp.AppExecutors;
 import be.tabtabstudio.veganapp.data.entities.Favorites;
+import be.tabtabstudio.veganapp.data.entities.Label;
 import be.tabtabstudio.veganapp.data.entities.Location;
 import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.Supermarket;
@@ -39,9 +41,13 @@ public class VegRepository {
     private final SharedPreferences sp;
     private final MutableLiveData<Product> productData;
     private final MutableLiveData<User> userData;
-    private final MutableLiveData<List<Product>> searchProductsData;
-    private final MutableLiveData<List<Product>> newProductsData;
     private final MutableLiveData<Location> locationData;
+
+    private final MutableLiveData<List<Product>> newProductsData;
+    private final MutableLiveData<List<Product>> searchProductsData;
+    private final MutableLiveData<List<Product>> highestRatedProductsData;
+    private final MutableLiveData<List<Product>> mostPopularProductsData;
+    private final HashMap<String, MutableLiveData<List<Product>>> labelProductsDataMap;
     private LiveData<Favorites> favoritesData;
 
     public static VegRepository getInstance(Context context) {
@@ -60,6 +66,10 @@ public class VegRepository {
         productData = new MutableLiveData<>();
         searchProductsData = new MutableLiveData<>();
         newProductsData = new MutableLiveData<>();
+        highestRatedProductsData = new MutableLiveData<>();
+        mostPopularProductsData = new MutableLiveData<>();
+        labelProductsDataMap = new HashMap<>();
+
         userData = new MutableLiveData<>();
         locationData = new MutableLiveData<>();
 
@@ -84,6 +94,23 @@ public class VegRepository {
 
     public LiveData<List<Product>> getSearchProductsObservable() {
         return searchProductsData;
+    }
+
+    public MutableLiveData<List<Product>> getMostPopularProductsObservable() {
+        return mostPopularProductsData;
+    }
+
+    public MutableLiveData<List<Product>> getHighestRatedProductsObservable() {
+        return highestRatedProductsData;
+    }
+
+    public MutableLiveData<List<Product>> getProductsObservableWithLabel(Label label) {
+        MutableLiveData<List<Product>> data = labelProductsDataMap.get(label.name);
+        if (data == null) {
+            data = new MutableLiveData<>();
+            labelProductsDataMap.put(label.name, data);
+        }
+        return data;
     }
 
     public LiveData<Favorites> getFavoritesObservable() {
@@ -208,11 +235,28 @@ public class VegRepository {
     }
 
     public void searchProducts(String searchQuery, int size, int page) {
-        api.getProducts(searchQuery, "none", size, page).enqueue(createProductsCallback(searchProductsData));
+        api.getProducts(searchQuery, "none", size, page, null).enqueue(createProductsCallback(searchProductsData));
     }
 
     public void fetchNewProducts(int size, int page) {
-        api.getProducts(null, "creationdate", size, page).enqueue(createProductsCallback(newProductsData));
+        api.getProducts(null, "creationdate", size, page, null).enqueue(createProductsCallback(newProductsData));
+    }
+
+    public void fetchHighestRatedProducts(int size, int page) {
+        api.getProducts(null, "rating", size, page, null).enqueue(createProductsCallback(highestRatedProductsData));
+    }
+
+    public void fetchMostPopularProducts(int size, int page) {
+        api.getProducts(null, "hits", size, page, null).enqueue(createProductsCallback(mostPopularProductsData));
+    }
+
+    public void fetchProductsWithLabel(Label label, int size, int page) {
+        MutableLiveData<List<Product>> data = labelProductsDataMap.get(label.name);
+        if (data == null) {
+            data = new MutableLiveData<>();
+            labelProductsDataMap.put(label.name, data);
+        }
+        api.getProducts(null, "hits", size, page, label.name).enqueue(createProductsCallback(data));
     }
 
     public void markProductInvalid(Product p) {

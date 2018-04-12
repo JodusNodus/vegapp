@@ -13,4 +13,13 @@ public class Supermarket {
     public String name;
     public String address;
     public Retailchain retailchain;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Supermarket) {
+            return ((Supermarket) obj).placeid.equalsIgnoreCase(placeid);
+        } else {
+            return false;
+        }
+    }
 }

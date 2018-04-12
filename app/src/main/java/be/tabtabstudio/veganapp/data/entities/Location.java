@@ -8,4 +8,14 @@ public class Location {
         this.lat = lat;
         this.lng = lng;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Location) {
+            Location loc = ((Location) obj);
+            return loc.lat == lat && loc.lng == lng;
+        } else {
+            return false;
+        }
+    }
 }

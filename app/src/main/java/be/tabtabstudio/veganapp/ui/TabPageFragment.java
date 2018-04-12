@@ -26,6 +26,8 @@ public class TabPageFragment extends Fragment {
     public static final String ARG_DATA = "data";
     public static final String NEW_PAGE = "new";
     public static final String SEARCH_PAGE = "search";
+    public static final String POPULAR_PAGE = "popular";
+    public static final String RATING_PAGE = "rating";
     private int mColumnCount;
     private OnListFragmentInteractionListener mListener;
     private TabPageViewModel mViewModel;
@@ -79,12 +81,20 @@ public class TabPageFragment extends Fragment {
         };
 
         switch (getArguments().getString(ARG_DATA)) {
+            case SEARCH_PAGE:
+                mViewModel.getSearchProductsObservable().observe(this, observer);
+                break;
             case NEW_PAGE:
                 mViewModel.getNewProductsObservable().observe(this, observer);
                 mViewModel.fetchNewProducts();
                 break;
-            case SEARCH_PAGE:
-                mViewModel.getSearchProductsObservable().observe(this, observer);
+            case RATING_PAGE:
+                mViewModel.getHighestRatedProductsObservable().observe(this, observer);
+                mViewModel.fetchHighestRatedProducts();
+                break;
+            case POPULAR_PAGE:
+                mViewModel.getMostPopularProductsObservable().observe(this, observer);
+                mViewModel.fetchMostPopularProducts();
                 break;
         }
 

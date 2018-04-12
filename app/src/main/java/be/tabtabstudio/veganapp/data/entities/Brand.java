@@ -14,4 +14,13 @@ public class Brand {
 
     @ColumnInfo(name = "brandname")
     public String name;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Brand) {
+            return ((Brand) obj).brandid == brandid;
+        } else {
+            return false;
+        }
+    }
 }
