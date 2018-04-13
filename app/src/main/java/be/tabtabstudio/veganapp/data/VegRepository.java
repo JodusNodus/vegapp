@@ -104,11 +104,11 @@ public class VegRepository {
         return highestRatedProductsData;
     }
 
-    public MutableLiveData<List<Product>> getProductsObservableWithLabel(Label label) {
-        MutableLiveData<List<Product>> data = labelProductsDataMap.get(label.name);
+    public MutableLiveData<List<Product>> getProductsObservableWithLabel(String label) {
+        MutableLiveData<List<Product>> data = labelProductsDataMap.get(label);
         if (data == null) {
             data = new MutableLiveData<>();
-            labelProductsDataMap.put(label.name, data);
+            labelProductsDataMap.put(label, data);
         }
         return data;
     }
@@ -250,13 +250,13 @@ public class VegRepository {
         api.getProducts(null, "hits", size, page, null).enqueue(createProductsCallback(mostPopularProductsData));
     }
 
-    public void fetchProductsWithLabel(Label label, int size, int page) {
-        MutableLiveData<List<Product>> data = labelProductsDataMap.get(label.name);
+    public void fetchProductsWithLabel(String label, int size, int page) {
+        MutableLiveData<List<Product>> data = labelProductsDataMap.get(label);
         if (data == null) {
             data = new MutableLiveData<>();
-            labelProductsDataMap.put(label.name, data);
+            labelProductsDataMap.put(label, data);
         }
-        api.getProducts(null, "hits", size, page, label.name).enqueue(createProductsCallback(data));
+        api.getProducts(null, "hits", size, page, label).enqueue(createProductsCallback(data));
     }
 
     public void markProductInvalid(Product p) {

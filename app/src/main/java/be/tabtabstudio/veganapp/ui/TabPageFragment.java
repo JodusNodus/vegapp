@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import be.tabtabstudio.veganapp.R;
+import be.tabtabstudio.veganapp.data.entities.Label;
 import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.ProductListItem;
 
@@ -80,7 +81,8 @@ public class TabPageFragment extends Fragment {
             }
         };
 
-        switch (getArguments().getString(ARG_DATA)) {
+        String data = getArguments().getString(ARG_DATA);
+        switch (data) {
             case SEARCH_PAGE:
                 mViewModel.getSearchProductsObservable().observe(this, observer);
                 break;
@@ -95,6 +97,10 @@ public class TabPageFragment extends Fragment {
             case POPULAR_PAGE:
                 mViewModel.getMostPopularProductsObservable().observe(this, observer);
                 mViewModel.fetchMostPopularProducts();
+                break;
+            default:
+                mViewModel.getProductsObservableWithLabel(data).observe(this, observer);
+                mViewModel.fetchProductsWithLabel(data);
                 break;
         }
 

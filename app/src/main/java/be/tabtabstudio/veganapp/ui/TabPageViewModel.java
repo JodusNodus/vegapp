@@ -34,7 +34,7 @@ public class TabPageViewModel extends ViewModel {
         return repo.getMostPopularProductsObservable();
     }
 
-    public LiveData<List<Product>> getProductsObservableWithLabel(Label label) {
+    public LiveData<List<Product>> getProductsObservableWithLabel(String label) {
         return repo.getProductsObservableWithLabel(label);
     }
 
@@ -47,7 +47,7 @@ public class TabPageViewModel extends ViewModel {
     public void fetchMostPopularProducts() {
         repo.fetchMostPopularProducts(20, 1);
     }
-    public void fetchProductsWithLabel(Label label) {
+    public void fetchProductsWithLabel(String label) {
         repo.fetchProductsWithLabel(label, 20, 1);
     }
 }
