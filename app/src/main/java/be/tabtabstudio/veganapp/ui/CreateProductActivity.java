@@ -29,11 +29,16 @@ public class CreateProductActivity extends AppCompatActivity {
             }
         });
 
-        scanBarcode();
+        takePicture();
     }
 
     private void scanBarcode() {
         Intent k = new Intent(this, BarcodeScannerActivity.class);
+        startActivity(k);
+    }
+
+    private void takePicture() {
+        Intent k = new Intent(this, ProductCameraActivity.class);
         startActivity(k);
     }
 }
