@@ -59,6 +59,15 @@ public class MainActivity extends AppCompatActivity implements TabPageFragment.O
         searchBar.setLastSuggestions(lastSearches);
 
         setupSearchFragment();
+
+        findViewById(R.id.add_product_btn).setOnClickListener((view) -> {
+            startCreateProductActivity();
+        });
+    }
+
+    private void startCreateProductActivity() {
+        Intent k = new Intent(this, CreateProductActivity.class);
+        startActivity(k);
     }
 
     private void setupSearchFragment() {
