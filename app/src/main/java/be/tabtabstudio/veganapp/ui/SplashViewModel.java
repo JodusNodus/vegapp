@@ -118,7 +118,7 @@ public class SplashViewModel extends ViewModel {
             public void onProviderDisabled(String provider) {}
         };
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
     }
 
     public void handleLocationLoad(Location location) {
