@@ -22,14 +22,26 @@ public class CreateProductActivity extends AppCompatActivity {
         mViewModel.setContext(this);
         mViewModel.startNewForm();
 
-        mViewModel.getEanObservable().observe(this, new Observer<String>() {
+        mViewModel.getEanObservable().observe(this, new Observer<Long>() {
             @Override
-            public void onChanged(@Nullable String ean) {
-                Toast.makeText(CreateProductActivity.this, ean, Toast.LENGTH_LONG).show();
+            public void onChanged(@Nullable Long ean) {
+                mViewModel.doesProductAlreadyExist(ean);
             }
         });
 
-        takePicture();
+        mViewModel.getAlreadyExistsObservable().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean alreadyExists) {
+                if (alreadyExists) {
+                    finish();
+                    Toast.makeText(getApplicationContext(), R.string.product_already_exists, Toast.LENGTH_SHORT);
+                } else {
+                    takePicture();
+                }
+            }
+        });
+
+        scanBarcode();
     }
 
     private void scanBarcode() {

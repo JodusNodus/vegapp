@@ -15,7 +15,7 @@ import be.tabtabstudio.veganapp.data.entities.Favorites;
 import be.tabtabstudio.veganapp.data.entities.Location;
 import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.User;
-import be.tabtabstudio.veganapp.data.livedatacontainers.CreateProductFormContainer;
+import be.tabtabstudio.veganapp.data.subrepos.CreateProductRepository;
 import be.tabtabstudio.veganapp.data.local.AppDatabase;
 import be.tabtabstudio.veganapp.data.network.ApiService;
 import be.tabtabstudio.veganapp.data.network.ApiServiceFactory;
@@ -48,7 +48,7 @@ public class VegRepository {
     private final MutableLiveData<List<Product>> mostPopularProductsData;
     private final HashMap<String, MutableLiveData<List<Product>>> labelProductsDataMap;
     private LiveData<Favorites> favoritesData;
-    private CreateProductFormContainer productFormContainer;
+    private CreateProductRepository createProductRepository;
 
     public static VegRepository getInstance(Context context) {
         if (sInstance == null) {
@@ -306,11 +306,11 @@ public class VegRepository {
         });
     }
 
-    public void createProductFormContainer() {
-        productFormContainer = new CreateProductFormContainer();
+    public void createProductRepository() {
+        createProductRepository = new CreateProductRepository(api, db);
     }
 
-    public CreateProductFormContainer getProductFormContainer() {
-        return productFormContainer;
+    public CreateProductRepository getCreateProductRepository() {
+        return createProductRepository;
     }
 }

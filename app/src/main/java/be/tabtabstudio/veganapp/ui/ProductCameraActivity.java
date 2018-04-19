@@ -5,6 +5,8 @@ import android.graphics.BitmapFactory;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.wonderkiln.camerakit.CameraKitError;
@@ -33,6 +35,7 @@ public class ProductCameraActivity extends AppCompatActivity implements CameraKi
         cameraBtn = findViewById(R.id.take_picture_btn);
         cameraBtn.setOnClickListener(view -> {
             disableBtn();
+            hideCameraView();
             cameraView.captureImage();
         });
     }
@@ -40,6 +43,10 @@ public class ProductCameraActivity extends AppCompatActivity implements CameraKi
     private void disableBtn() {
         cameraBtn.setEnabled(false);
         cameraBtn.setAlpha(0.5f);
+    }
+
+    private void hideCameraView() {
+        cameraView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -61,12 +68,12 @@ public class ProductCameraActivity extends AppCompatActivity implements CameraKi
 
     @Override
     public void onError(CameraKitError cameraKitError) {
-
     }
 
     @Override
     public void onImage(CameraKitImage cameraKitImage) {
-        Bitmap res = cameraKitImage.getBitmap();
+        Toast.makeText(getApplicationContext(), String.valueOf(cameraKitImage.getBitmap().getHeight()), Toast.LENGTH_SHORT).show();
+        //Bitmap res = cameraKitImage.getBitmap();
         finish();
     }
 

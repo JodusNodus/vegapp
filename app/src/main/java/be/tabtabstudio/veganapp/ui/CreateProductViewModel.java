@@ -1,5 +1,6 @@
 package be.tabtabstudio.veganapp.ui;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
@@ -15,14 +16,22 @@ public class CreateProductViewModel extends ViewModel {
     }
 
     public void startNewForm() {
-        repo.createProductFormContainer();
+        repo.createProductRepository();
     }
 
-    public void setEan(String ean) {
-        repo.getProductFormContainer().ean.setValue(ean);
+    public void setEan(long ean) {
+        repo.getCreateProductRepository().ean.postValue(ean);
     }
 
-    public MutableLiveData<String> getEanObservable() {
-        return repo.getProductFormContainer().ean;
+    public LiveData<Long> getEanObservable() {
+        return repo.getCreateProductRepository().ean;
+    }
+
+    public void doesProductAlreadyExist(long ean) {
+        repo.getCreateProductRepository().doesProductAlreadyExist(ean);
+    }
+
+    public LiveData<Boolean> getAlreadyExistsObservable() {
+        return repo.getCreateProductRepository().alreadyExists;
     }
 }
