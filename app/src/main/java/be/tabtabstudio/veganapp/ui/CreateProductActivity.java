@@ -3,20 +3,32 @@ package be.tabtabstudio.veganapp.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+import com.wonderkiln.camerakit.CameraKitImage;
 
 import be.tabtabstudio.veganapp.R;
 
 public class CreateProductActivity extends AppCompatActivity {
 
     private CreateProductViewModel mViewModel;
+    private ImageView newProductImage;
+    private TextView newProductBarcode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_product);
+
+        newProductImage = findViewById(R.id.new_product_image);
+        newProductBarcode = findViewById(R.id.new_product_barcode);
 
         mViewModel = ViewModelProviders.of(this).get(CreateProductViewModel.class);
         mViewModel.setContext(this);
@@ -26,6 +38,7 @@ public class CreateProductActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable Long ean) {
                 mViewModel.doesProductAlreadyExist(ean);
+                setBarcode(ean);
             }
         });
 
@@ -41,7 +54,22 @@ public class CreateProductActivity extends AppCompatActivity {
             }
         });
 
+        mViewModel.getImageObservable().observe(this, new Observer<CameraKitImage>() {
+            @Override
+            public void onChanged(@Nullable CameraKitImage image) {
+                setImage(image.getBitmap());
+            }
+        });
+
         scanBarcode();
+    }
+
+    private void setBarcode(Long ean) {
+        newProductBarcode.setText(ean.toString());
+    }
+
+    private void setImage(Bitmap bitmap) {
+        newProductImage.setImageBitmap(bitmap);
     }
 
     private void scanBarcode() {

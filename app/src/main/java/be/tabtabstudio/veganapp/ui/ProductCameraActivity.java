@@ -1,5 +1,6 @@
 package be.tabtabstudio.veganapp.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import be.tabtabstudio.veganapp.R;
 
 public class ProductCameraActivity extends AppCompatActivity implements CameraKitEventListener {
 
+    private CreateProductViewModel mViewModel;
     private CameraView cameraView;
     private FloatingActionButton cameraBtn;
 
@@ -27,6 +29,8 @@ public class ProductCameraActivity extends AppCompatActivity implements CameraKi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_camera);
+        mViewModel = ViewModelProviders.of(this).get(CreateProductViewModel.class);
+        mViewModel.setContext(this);
 
         cameraView = findViewById(R.id.camera);
 
@@ -72,9 +76,8 @@ public class ProductCameraActivity extends AppCompatActivity implements CameraKi
 
     @Override
     public void onImage(CameraKitImage cameraKitImage) {
-        Toast.makeText(getApplicationContext(), String.valueOf(cameraKitImage.getBitmap().getHeight()), Toast.LENGTH_SHORT).show();
-        //Bitmap res = cameraKitImage.getBitmap();
         finish();
+        mViewModel.setImage(cameraKitImage);
     }
 
     @Override

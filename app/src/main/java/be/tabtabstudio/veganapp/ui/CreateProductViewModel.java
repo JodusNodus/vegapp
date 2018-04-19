@@ -4,6 +4,8 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
+import com.wonderkiln.camerakit.CameraKitImage;
+
 import be.tabtabstudio.veganapp.data.VegRepository;
 
 public class CreateProductViewModel extends ViewModel {
@@ -33,5 +35,13 @@ public class CreateProductViewModel extends ViewModel {
 
     public LiveData<Boolean> getAlreadyExistsObservable() {
         return repo.getCreateProductRepository().alreadyExists;
+    }
+
+    public void setImage(CameraKitImage cameraKitImage) {
+        repo.getCreateProductRepository().setImage(cameraKitImage);
+    }
+
+    public LiveData<CameraKitImage> getImageObservable() {
+        return repo.getCreateProductRepository().image;
     }
 }

@@ -32,8 +32,8 @@ public class BarcodeScannerActivity extends AppCompatActivity implements Barcode
     @Override
     public void onScanned(Barcode barcode) {
         barcodeReader.playBeep();
-        mViewModel.setEan(Long.valueOf(barcode.displayValue));
         finish();
+        mViewModel.setEan(Long.valueOf(barcode.displayValue));
     }
 
     @Override

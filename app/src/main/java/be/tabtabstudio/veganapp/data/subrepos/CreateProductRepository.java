@@ -2,6 +2,9 @@ package be.tabtabstudio.veganapp.data.subrepos;
 
 import android.arch.lifecycle.MutableLiveData;
 
+import com.wonderkiln.camerakit.CameraKit;
+import com.wonderkiln.camerakit.CameraKitImage;
+
 import be.tabtabstudio.veganapp.data.local.AppDatabase;
 import be.tabtabstudio.veganapp.data.network.ApiService;
 import be.tabtabstudio.veganapp.data.network.results.GetProductResult;
@@ -15,12 +18,18 @@ public class CreateProductRepository {
 
     public final MutableLiveData<Long> ean;
     public final MutableLiveData<Boolean> alreadyExists;
+    public final MutableLiveData<CameraKitImage> image;
 
     public CreateProductRepository(ApiService api, AppDatabase db) {
         this.api = api;
         this.db = db;
         ean = new MutableLiveData<>();
         alreadyExists = new MutableLiveData<>();
+        image = new MutableLiveData<>();
+    }
+
+    public void setImage(CameraKitImage cameraKitImage) {
+        image.setValue(cameraKitImage);
     }
 
     public void doesProductAlreadyExist(long ean) {
