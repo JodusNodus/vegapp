@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.squareup.picasso.Picasso;
 import com.wonderkiln.camerakit.CameraKitImage;
 
@@ -75,12 +77,27 @@ public class CreateProductActivity extends AppCompatActivity {
     }
 
     private void scanBarcode() {
-        Intent k = new Intent(this, BarcodeScannerActivity.class);
-        startActivity(k);
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.EAN_13, IntentIntegrator.EAN_8);
+        integrator.setPrompt(getString(R.string.scan_barcode));
+        integrator.setBeepEnabled(true);
+        integrator.setBarcodeImageEnabled(true);
+        integrator.initiateScan();
     }
 
     private void takePicture() {
         Intent k = new Intent(this, ProductCameraActivity.class);
         startActivity(k);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        // Barcode result
+        if(result != null && result.getContents() != null) {
+            mViewModel.setEan(Long.valueOf(result.getContents()));
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

@@ -25,7 +25,7 @@ public class CreateProductViewModel extends ViewModel {
     }
 
     public void setEan(long ean) {
-        repo.getCreateProductRepository().ean.postValue(ean);
+        repo.getCreateProductRepository().ean.setValue(ean);
     }
 
     public LiveData<Long> getEanObservable() {
