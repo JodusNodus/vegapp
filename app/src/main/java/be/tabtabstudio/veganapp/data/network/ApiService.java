@@ -13,6 +13,7 @@ import be.tabtabstudio.veganapp.data.network.results.LoginResult;
 import be.tabtabstudio.veganapp.data.network.results.UploadProductImageResult;
 import be.tabtabstudio.veganapp.data.entities.Location;
 import be.tabtabstudio.veganapp.data.entities.User;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -46,8 +47,8 @@ public interface ApiService {
     Call<GetSupermarketsResult> getSupermarktes();
 
     @Multipart
-    @POST("api/products/image")
-    Call<UploadProductImageResult> uploadProductImage(@Part long ean, @Part("photo") RequestBody photo);
+    @POST("api/products/picture")
+    Call<UploadProductImageResult> uploadProductImage(@Part MultipartBody.Part ean, @Part MultipartBody.Part picture);
 
     @POST("api/products")
     Call<Void> createProduct(@Body CreateProductBody createProductBody);

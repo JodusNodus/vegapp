@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.wonderkiln.camerakit.CameraKitImage;
 
+import java.util.List;
+
 import be.tabtabstudio.veganapp.R;
 
 public class CreateProductActivity extends AppCompatActivity {
@@ -54,10 +56,10 @@ public class CreateProductActivity extends AppCompatActivity {
             }
         });
 
-        mViewModel.getImageObservable().observe(this, new Observer<CameraKitImage>() {
+        mViewModel.getLabelSuggestionsObservable().observe(this, new Observer<List<String>>() {
             @Override
-            public void onChanged(@Nullable CameraKitImage image) {
-                setImage(image.getBitmap());
+            public void onChanged(@Nullable List<String> labelSuggestions) {
+
             }
         });
 

@@ -6,7 +6,10 @@ import android.content.Context;
 
 import com.wonderkiln.camerakit.CameraKitImage;
 
+import java.util.List;
+
 import be.tabtabstudio.veganapp.data.VegRepository;
+import be.tabtabstudio.veganapp.data.subrepos.CreateProductRepository;
 
 public class CreateProductViewModel extends ViewModel {
     private VegRepository repo;
@@ -37,11 +40,17 @@ public class CreateProductViewModel extends ViewModel {
         return repo.getCreateProductRepository().alreadyExists;
     }
 
-    public void setImage(CameraKitImage cameraKitImage) {
-        repo.getCreateProductRepository().setImage(cameraKitImage);
+    public void uploadProductImage(CameraKitImage cameraKitImage) {
+        CreateProductRepository cpRepo = repo.getCreateProductRepository();
+        cpRepo.uploadProductImage(cpRepo.ean.getValue(), cameraKitImage);
     }
 
-    public LiveData<CameraKitImage> getImageObservable() {
-        return repo.getCreateProductRepository().image;
+    public LiveData<List<String>> getLabelSuggestionsObservable() {
+        return repo.getCreateProductRepository().labelSuggestions;
     }
+
+    public LiveData<List<String>> getBrandSuggestionsObservable() {
+        return repo.getCreateProductRepository().brandSuggestions;
+    }
+
 }

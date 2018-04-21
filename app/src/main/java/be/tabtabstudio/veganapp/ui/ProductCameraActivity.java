@@ -77,7 +77,7 @@ public class ProductCameraActivity extends AppCompatActivity implements CameraKi
     @Override
     public void onImage(CameraKitImage cameraKitImage) {
         finish();
-        mViewModel.setImage(cameraKitImage);
+        mViewModel.uploadProductImage(cameraKitImage);
     }
 
     @Override
