@@ -8,15 +8,54 @@
     tools:context=".ui.CreateProductActivity">
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Display2"
+        style="@style/TextAppearance.AppCompat.Display1"
         android:textAlignment="center"
         android:id="@+id/new_product_barcode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ImageView
-        android:id="@+id/new_product_image"
-        android:layout_width="360dp"
-        android:layout_height="240dp" />
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <AutoCompleteTextView
+            android:id="@+id/brand_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/prompt_brandname"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/product_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/prompt_product_name"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <com.pchmn.materialchips.ChipsInput
+        android:id="@+id/label_chips_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:maxRows="2"
+        app:chip_hasAvatarIcon="false"
+        app:showChipDetailed="false"
+        app:deletable="true"
+        app:hint="@string/prompt_labels"
+        app:labelColor="@android:color/white"
+        app:backgroundColor="@android:color/holo_blue_light"
+        app:deleteIconColor="@android:color/white" />
+        />
 
 </LinearLayout>
