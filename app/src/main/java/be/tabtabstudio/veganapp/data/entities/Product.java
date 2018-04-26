@@ -35,6 +35,10 @@ public class Product extends ProductListItem {
         return p;
     }
 
+    public static String getCoverImage(long ean) {
+        return "https://storage.googleapis.com/vegstorage/cover-" + ean;
+    }
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @TypeConverters(DateConverters.class)
     public Date creationdate;

@@ -2,43 +2,46 @@ package be.tabtabstudio.veganapp.ui;
 
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.pchmn.materialchips.model.Chip;
-import com.pchmn.materialchips.model.ChipInterface;
+import com.tylersuehr.chips.Chip;
 
-import be.tabtabstudio.veganapp.data.entities.Label;
-import be.tabtabstudio.veganapp.utilities.StringUtils;
-
-public class LabelChip implements ChipInterface {
+public class LabelChip extends Chip {
 
     private String label;
 
     public LabelChip(String label) {
-        this.label = StringUtils.capitize(label);
+        this.label = label;
     }
 
+    @Nullable
     @Override
     public Object getId() {
         return label;
     }
 
+    @NonNull
+    @Override
+    public String getTitle() {
+        return label;
+    }
+
+    @Nullable
+    @Override
+    public String getSubtitle() {
+        return null;
+    }
+
+    @Nullable
     @Override
     public Uri getAvatarUri() {
         return null;
     }
 
+    @Nullable
     @Override
     public Drawable getAvatarDrawable() {
-        return null;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
-    public String getInfo() {
         return null;
     }
 }

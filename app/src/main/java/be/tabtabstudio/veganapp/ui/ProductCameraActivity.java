@@ -10,16 +10,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.wonderkiln.camerakit.CameraKit;
 import com.wonderkiln.camerakit.CameraKitError;
 import com.wonderkiln.camerakit.CameraKitEvent;
+import com.wonderkiln.camerakit.CameraKitEventCallback;
 import com.wonderkiln.camerakit.CameraKitEventListener;
+import com.wonderkiln.camerakit.CameraKitEventListenerAdapter;
 import com.wonderkiln.camerakit.CameraKitImage;
 import com.wonderkiln.camerakit.CameraKitVideo;
 import com.wonderkiln.camerakit.CameraView;
 
 import be.tabtabstudio.veganapp.R;
 
-public class ProductCameraActivity extends AppCompatActivity implements CameraKitEventListener {
+public class ProductCameraActivity extends AppCompatActivity {
 
     private CreateProductViewModel mViewModel;
     private CameraView cameraView;
@@ -34,7 +37,13 @@ public class ProductCameraActivity extends AppCompatActivity implements CameraKi
 
         cameraView = findViewById(R.id.camera);
 
-        cameraView.addCameraKitListener(this);
+        cameraView.addCameraKitListener(new CameraKitEventListenerAdapter() {
+            @Override
+            public void onImage(CameraKitImage image) {
+                finish();
+                mViewModel.uploadProductImage(image);
+            }
+        });
 
         cameraBtn = findViewById(R.id.take_picture_btn);
         cameraBtn.setOnClickListener(view -> {
@@ -63,25 +72,5 @@ public class ProductCameraActivity extends AppCompatActivity implements CameraKi
     protected void onPause() {
         cameraView.stop();
         super.onPause();
-    }
-
-    @Override
-    public void onEvent(CameraKitEvent cameraKitEvent) {
-
-    }
-
-    @Override
-    public void onError(CameraKitError cameraKitError) {
-    }
-
-    @Override
-    public void onImage(CameraKitImage cameraKitImage) {
-        finish();
-        mViewModel.uploadProductImage(cameraKitImage);
-    }
-
-    @Override
-    public void onVideo(CameraKitVideo cameraKitVideo) {
-
     }
 }

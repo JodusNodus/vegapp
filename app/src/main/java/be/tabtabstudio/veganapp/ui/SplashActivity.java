@@ -65,7 +65,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void showLoadingLocation() {
-        loadingTextView.setText("Finding your location");
+        loadingTextView.setText(R.string.fetching_location);
     }
 
     @Override

@@ -13,7 +13,7 @@
     <string name="error_invalid_email">email is niet correct</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="error_field_required">Dit veld is verplicht</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -33,7 +33,7 @@
     <string name="signup_failed">Registratie onsuccesvol</string>
     <string name="error_too_short">minstens 3 karakters</string>
     <string name="error_password_wrong_length">moet tussen 4 en 30 karakters zijn</string>
-    <string name="title_activity_main">Home</string>
+    <string name="title_activity_main">Overzicht</string>
     <string name="added_to_favorites">Toegevoegd aan favorieten</string>
     <string name="removed_from_favorites">Verwijderd uit favorieten</string>
     <string name="action_search">Zoeken</string>
@@ -42,4 +42,17 @@
     <string name="prompt_brandname">Merk</string>
     <string name="prompt_product_name">Product naam</string>
     <string name="prompt_labels">Labels</string>
+    <string name="untitled_product">Onbenoemd Product</string>
+    <string name="found_in_supermarket">Selecteer de supermarkt</string>
+    <string name="action_done">Klaar</string>
+    <string name="prompt_choose_supermarket">Selecteer de supermarket</string>
+    <string name="fetching_location">Locatie Berekenen</string>
+    <string name="prompt_take_picture">Neem een product foto</string>
+    <string name="prompt_save_product">Product Opslaan</string>
+    <string name="yes">ja</string>
+    <string name="no">nee</string>
+    <string name="error_min_one_label">Minstens 1 label is verplicht</string>
+    <string name="creating_product">Product aanmaken</string>
+    <string name="creating_product_success">Product opgeslagen</string>
+    <string name="creating_product_failure">Product opslaan mislukt</string>
 </resources>

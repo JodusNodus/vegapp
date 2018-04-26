@@ -154,43 +154,18 @@ public class ProductDetailsActivity extends AppCompatActivity {
         // Clear items in view
         supermarketListView.removeAllViews();
 
-        Supermarket[] smArr = new Supermarket[supermarkets.size()];
-        smArr = supermarkets.toArray(smArr);
+        for (int i = 0; i < supermarkets.size(); i++) {
+            Supermarket sm = supermarkets.get(i);
 
-        SupermarketListAdapter adapter = new SupermarketListAdapter(this, smArr);
-        for (int i = 0; i < adapter.getCount(); i++) {
-            View view = adapter.getView(i, null, supermarketListView);
-            view.setTag(new Integer(i));
-            view.setOnClickListener(supermarketClickListener);
-            supermarketListView.addView(view);
-        }
-    }
-
-    private class SupermarketListAdapter extends ArrayAdapter {
-
-        private Activity context;
-        private Supermarket[] supermarketsArr;
-
-        public SupermarketListAdapter(Activity context, Supermarket[] supermarketsArr) {
-            super(context,R.layout.supermarket_list_item , supermarketsArr);
-            this.supermarketsArr = supermarketsArr;
-            this.context = context;
-        }
-
-        public View getView(int position, View view, ViewGroup parent) {
-            LayoutInflater inflater=context.getLayoutInflater();
-            View rowView=inflater.inflate(R.layout.supermarket_list_item, null,true);
-
-            //this code gets references to objects in the listview_row.xml file
+            View rowView=getLayoutInflater().inflate(R.layout.supermarket_list_item, null,true);
             TextView nameView = (TextView) rowView.findViewById(R.id.supermarket_name);
             TextView addresView = (TextView) rowView.findViewById(R.id.supermarket_address);
-
-            //this code sets the values of the objects to values from the arrays
-            Supermarket sm = supermarketsArr[position];
             nameView.setText(sm.name);
             addresView.setText(sm.address);
 
-            return rowView;
+            rowView.setTag(new Integer(i));
+            rowView.setOnClickListener(supermarketClickListener);
+            supermarketListView.addView(rowView);
         }
     }
 

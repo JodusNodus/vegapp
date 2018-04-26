@@ -31,7 +31,7 @@
                 app:ckFacing="back"
                 app:ckFlash="off"
                 app:ckFocus="continuous"
-                app:ckMethod="standard"
+                app:ckMethod="still"
                 app:ckPinchToZoom="true"
                 app:ckPermissions="picture"
                 app:ckCropOutput="true"
