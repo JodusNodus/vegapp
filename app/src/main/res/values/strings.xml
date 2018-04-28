@@ -55,4 +55,5 @@
     <string name="creating_product">Product aanmaken</string>
     <string name="creating_product_success">Product opgeslagen</string>
     <string name="creating_product_failure">Product opslaan mislukt</string>
+    <string name="loading">Laden …</string>
 </resources>
