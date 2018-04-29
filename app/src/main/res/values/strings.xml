@@ -56,4 +56,7 @@
     <string name="creating_product_success">Product opgeslagen</string>
     <string name="creating_product_failure">Product opslaan mislukt</string>
     <string name="loading">Laden …</string>
+    <string name="cancel">Annuleer</string>
+    <string name="rate">Beoordeel</string>
+    <string name="give_rating">Geef een rating</string>
 </resources>

@@ -1,8 +1,7 @@
 package be.tabtabstudio.veganapp.ui;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentManager;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,29 +9,21 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Observable;
 
 import be.tabtabstudio.veganapp.R;
-import be.tabtabstudio.veganapp.data.entities.Favorites;
 import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.Supermarket;
 
@@ -84,6 +75,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
         });
 
         rateBtn.setOnClickListener((View v) -> {
+            FragmentManager fm = getSupportFragmentManager();
+            RatingDialogFragment dialog = new RatingDialogFragment();
+            dialog.setCancelable(false);
+            dialog.show(fm.beginTransaction(), "DIALOG_RATING");
         });
 
         long ean = getIntent().getLongExtra(EXTRA_EAN, -1);
@@ -92,12 +87,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        supermarketClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Integer index = (Integer) view.getTag();
-                mViewModel.handleSupermarketClick(index);
-            }
+        supermarketClickListener = view -> {
+            Integer index = (Integer) view.getTag();
+            mViewModel.handleSupermarketClick(index);
         };
 
         mViewModel.getProductObservable().observe(this, new Observer<Product>() {
@@ -111,7 +103,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
         mViewModel.getProductIsFavoriteObservable(ean).observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean productIsFavorite) {
-                Log.i("test", String.valueOf(productIsFavorite));
                 setFavoriteButtonState(productIsFavorite);
             }
         });
