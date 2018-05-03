@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.media.Image;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -56,11 +57,16 @@ public class CreateProductActivity extends AppCompatActivity {
     private ImageView coverImageView;
     private FloatingActionButton doneBtn;
     private ProgressDialog signupDialog;
+    private CoordinatorLayout addProductInfoLayout;
+    private LinearLayout addProductLoadingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_product);
+
+        addProductInfoLayout = findViewById(R.id.add_product_info);
+        addProductLoadingLayout = findViewById(R.id.add_product_loading);
 
         collapsingToolbar = findViewById(R.id.collapsing_toolbar);
         coverImageView = findViewById(R.id.product_cover_image_view);
@@ -79,90 +85,189 @@ public class CreateProductActivity extends AppCompatActivity {
         mViewModel.setContext(this);
         mViewModel.startNewForm();
 
-        doneBtn.setOnClickListener(view -> {
-            saveProduct();
-        });
+        addProductInfoLayout.setVisibility(View.GONE);
+        addProductLoadingLayout.setVisibility(View.VISIBLE);
+        disableForm();
 
+        // start step 1
+        addEanObservable();
+        scanBarcode();
+    }
+
+    // step 0
+    private void disableForm() {
+        disableView(productNameInput);
+        disableView(brandNameInput);
+        disableView(labelsInput);
+        disableView(doneBtn);
+    }
+
+    // step 1: Take a pictue of the BAR CODE
+    private void scanBarcode() {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.EAN_13, IntentIntegrator.EAN_8);
+        integrator.setPrompt(getString(R.string.scan_barcode));
+        integrator.setBeepEnabled(true);
+        integrator.setBarcodeImageEnabled(true);
+        integrator.initiateScan();
+    }
+
+    private void addEanObservable(){
+        mViewModel.getEanObservable().observe(this, ean -> {
+            addAlreadyExistsObservable();
+            mViewModel.doesProductAlreadyExist(ean);
+        });
+    }
+
+    private void addAlreadyExistsObservable(){
+        mViewModel.getAlreadyExistsObservable().observe(this, alreadyExists -> {
+            if (alreadyExists) {
+                Toast.makeText(getApplicationContext(), R.string.product_already_exists, Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                addProductSupermarketObservable();
+                pickSupermarket();
+                mViewModel.fetchNeededFormData();
+            }
+        });
+    }
+
+
+    // Step 2: Select SUPERMARKET
+    private void pickSupermarket() {
+        Intent k = new Intent(this, SupermarketPickerActivity.class);
+        startActivity(k);
+    }
+
+    private void addProductSupermarketObservable(){
+        mViewModel.getProductSupermarketObservable().observe(this, supermarket -> {
+            addCoverImageObservable();
+            takePicture();
+        });
+    }
+
+    // Step 3: Take a PICTURE of the product
+    private void takePicture() {
+        Intent k = new Intent(this, ProductCameraActivity.class);
+        startActivity(k);
+    }
+
+    private void addCoverImageObservable(){
+        mViewModel.getCoverImageObservable().observe(this, url -> {
+            if (url == null) {
+                finish();
+                return;
+            }
+            setCoverImage(url);
+            addInfoObservables();
+            enableForm();
+            addProductLoadingLayout.setVisibility(View.GONE);
+            addProductInfoLayout.setVisibility(View.VISIBLE);
+        });
+    }
+
+    private void setCoverImage(String url) {
+        Picasso.get().load(url).into(coverImageView);
+    }
+
+    private void enableForm() {
+        enableView(productNameInput);
+        enableView(brandNameInput);
+        enableView(labelsInput);
+        enableView(doneBtn);
+    }
+
+
+    // Step 4: INFO (title, band ...)
+    private void addInfoObservables(){
         TextWatcher titleWatcher = new InputTitleWatcher();
         productNameInput.addTextChangedListener(titleWatcher);
         brandNameInput.addTextChangedListener(titleWatcher);
 
-        mViewModel.getEanObservable().observe(this, new Observer<Long>() {
-            @Override
-            public void onChanged(@Nullable Long ean) {
-                mViewModel.doesProductAlreadyExist(ean);
-            }
+        mViewModel.getAllLabelsObservable().observe(this, allLabels -> {
+            setLabelList(allLabels);
         });
 
-        mViewModel.getAlreadyExistsObservable().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean alreadyExists) {
-                if (alreadyExists) {
-                    finish();
-                    Toast.makeText(getApplicationContext(), R.string.product_already_exists, Toast.LENGTH_SHORT);
-                } else {
-                    pickSupermarket();
-                    mViewModel.fetchNeededFormData();
-                }
-            }
+        mViewModel.getAllBrandsObservable().observe(this, allBrands -> {
+            setBrandList(allBrands);
         });
 
-        mViewModel.getProductSupermarketObservable().observe(this, new Observer<Supermarket>() {
-            @Override
-            public void onChanged(@Nullable Supermarket supermarket) {
-                takePicture();
-            }
+        mViewModel.getLabelSuggestionsObservable().observe(this, labelList -> {
+            setSuggestedLabelList(labelList);
+        });
+    }
+
+    private class InputTitleWatcher implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+        @Override
+        public void afterTextChanged(Editable editable) {
+            setProductTitle();
+            addSaveObservables();
+        }
+    }
+
+    private void setProductTitle() {
+        String brandName = brandNameInput.getText().toString();
+        String productName = productNameInput.getText().toString();
+
+        String str = "";
+        if (brandName != null) {
+            str += StringUtils.capitize(brandName) + " ";
+        }
+        str += StringUtils.capitize(productName);
+        collapsingToolbar.setTitle(str);
+    }
+
+    private List<LabelChip> getLabelChipList(List<String> labelList) {
+        List<LabelChip> labelChipList = new ArrayList<>();
+        for (String l : labelList) {
+            labelChipList.add(new LabelChip(l));
+        }
+        return labelChipList;
+    }
+
+    private void setLabelList(List<String> labelList) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                (this, android.R.layout.simple_dropdown_item_1line, labelList);
+        labelsInput.setThreshold(1);
+        labelsInput.setAdapter(adapter);
+        labelsInput.addChipTerminator('\n', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_ALL);
+        labelsInput.addChipTerminator(',', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_TO_TERMINATOR);
+        labelsInput.addChipTerminator(' ', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_TO_TERMINATOR);
+    }
+
+    private void setSuggestedLabelList(List<String> labelList) {
+        //labelChipsInput.setSelectedChipList(getLabelChipList(labelList));
+    }
+
+    private void setBrandList(List<String> brandList) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                (this, android.R.layout.simple_dropdown_item_1line, brandList);
+        brandNameInput.setThreshold(1);
+        brandNameInput.setAdapter(adapter);
+    }
+
+
+    // Step 5: save
+    private void addSaveObservables(){
+        doneBtn.setOnClickListener(view -> {
+            saveProduct();
         });
 
-        mViewModel.getAllLabelsObservable().observe(this, new Observer<List<String>>() {
-            @Override
-            public void onChanged(@Nullable List<String> allLabels) {
-                setLabelList(allLabels);
+        mViewModel.getCreateSuccessObservable().observe(this, isSuccess -> {
+            if (isSuccess) {
+                signupDialog.hide();
+                openProductAndClose();
+                Toast.makeText(getApplicationContext(), R.string.creating_product_success, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.creating_product_failure, Toast.LENGTH_SHORT).show();
             }
         });
-
-        mViewModel.getAllBrandsObservable().observe(this, new Observer<List<String>>() {
-            @Override
-            public void onChanged(@Nullable List<String> allBrands) {
-                setBrandList(allBrands);
-            }
-        });
-
-        mViewModel.getCoverImageObservable().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String url) {
-                if (url == null) {
-                    finish();
-                    return;
-                }
-                setCoverImage(url);
-                enableForm();
-            }
-        });
-
-        mViewModel.getLabelSuggestionsObservable().observe(this, new Observer<List<String>>() {
-            @Override
-            public void onChanged(@Nullable List<String> labelList) {
-                setSuggestedLabelList(labelList);
-            }
-        });
-
-        mViewModel.getCreateSuccessObservable().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isSuccess) {
-                if (isSuccess == true) {
-                    signupDialog.hide();
-                    openProductAndClose();
-                    Toast.makeText(getApplicationContext(), R.string.creating_product_success, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), R.string.creating_product_failure, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        disableForm();
-
-        scanBarcode();
     }
 
     private void openProductAndClose() {
@@ -199,85 +304,7 @@ public class CreateProductActivity extends AppCompatActivity {
         mViewModel.createProduct(productName, brandName, labelList);
     }
 
-    private void pickSupermarket() {
-        Intent k = new Intent(this, SupermarketPickerActivity.class);
-        startActivity(k);
-    }
-
-    private void disableForm() {
-        disableView(productNameInput);
-        disableView(brandNameInput);
-        disableView(labelsInput);
-        disableView(doneBtn);
-    }
-
-    private void enableForm() {
-        enableView(productNameInput);
-        enableView(brandNameInput);
-        enableView(labelsInput);
-        enableView(doneBtn);
-    }
-
-    private void setProductTitle() {
-        String brandName = brandNameInput.getText().toString();
-        String productName = productNameInput.getText().toString();
-
-        String str = "";
-        if (brandName != null) {
-            str += StringUtils.capitize(brandName) + " ";
-        }
-        str += StringUtils.capitize(productName);
-        collapsingToolbar.setTitle(str);
-    }
-
-    private void setCoverImage(String url) {
-        Picasso.get().load(url).into(coverImageView);
-    }
-
-    private List<LabelChip> getLabelChipList(List<String> labelList) {
-        List<LabelChip> labelChipList = new ArrayList<>();
-        for (String l : labelList) {
-            labelChipList.add(new LabelChip(l));
-        }
-        return labelChipList;
-    }
-
-    private void setLabelList(List<String> labelList) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                (this, android.R.layout.simple_dropdown_item_1line, labelList);
-        labelsInput.setThreshold(1);
-        labelsInput.setAdapter(adapter);
-        labelsInput.addChipTerminator('\n', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_ALL);
-        labelsInput.addChipTerminator(',', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_TO_TERMINATOR);
-        labelsInput.addChipTerminator(' ', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_TO_TERMINATOR);
-    }
-
-
-    private void setSuggestedLabelList(List<String> labelList) {
-        //labelChipsInput.setSelectedChipList(getLabelChipList(labelList));
-    }
-
-    private void setBrandList(List<String> brandList) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                (this, android.R.layout.simple_dropdown_item_1line, brandList);
-        brandNameInput.setThreshold(1);
-        brandNameInput.setAdapter(adapter);
-    }
-
-    private void scanBarcode() {
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.EAN_13, IntentIntegrator.EAN_8);
-        integrator.setPrompt(getString(R.string.scan_barcode));
-        integrator.setBeepEnabled(true);
-        integrator.setBarcodeImageEnabled(true);
-        integrator.initiateScan();
-    }
-
-    private void takePicture() {
-        Intent k = new Intent(this, ProductCameraActivity.class);
-        startActivity(k);
-    }
-
+    // other
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -301,19 +328,6 @@ public class CreateProductActivity extends AppCompatActivity {
     private void enableView(View view) {
         view.setEnabled(true);
         view.setAlpha(1.0f);
-    }
-
-    private class InputTitleWatcher implements TextWatcher {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-        @Override
-        public void afterTextChanged(Editable editable) {
-            setProductTitle();
-        }
     }
 
     @Override

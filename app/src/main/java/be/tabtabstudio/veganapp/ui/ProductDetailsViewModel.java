@@ -51,8 +51,9 @@ public class ProductDetailsViewModel extends ViewModel {
         }
     }
 
-    public void handleRateProduct() {
-
+    public void handleRateProduct(int rating) {
+        Product p = getProductObservable().getValue();
+        repo.rateProduct(p, rating);
     }
 
     public void handleMarkInvalid() {
