@@ -121,14 +121,9 @@ public class CreateProductActivity extends AppCompatActivity {
 
     private void addAlreadyExistsObservable(){
         mViewModel.getAlreadyExistsObservable().observe(this, alreadyExists -> {
-            if (alreadyExists) {
-                Toast.makeText(getApplicationContext(), R.string.product_already_exists, Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                addProductSupermarketObservable();
-                pickSupermarket();
-                mViewModel.fetchNeededFormData();
-            }
+            addProductSupermarketObservable();
+            pickSupermarket();
+            mViewModel.fetchNeededFormData();
         });
     }
 
@@ -141,8 +136,14 @@ public class CreateProductActivity extends AppCompatActivity {
 
     private void addProductSupermarketObservable(){
         mViewModel.getProductSupermarketObservable().observe(this, supermarket -> {
-            addCoverImageObservable();
-            takePicture();
+
+            if (mViewModel.getAlreadyExistsObservable().getValue() == true) {
+                addSaveObservables();
+                mViewModel.createProduct();
+            } else {
+                addCoverImageObservable();
+                takePicture();
+            }
         });
     }
 
@@ -261,11 +262,14 @@ public class CreateProductActivity extends AppCompatActivity {
 
         mViewModel.getCreateSuccessObservable().observe(this, isSuccess -> {
             if (isSuccess) {
-                signupDialog.hide();
+                if (signupDialog != null) {
+                    signupDialog.hide();
+                }
                 openProductAndClose();
                 Toast.makeText(getApplicationContext(), R.string.creating_product_success, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getApplicationContext(), R.string.creating_product_failure, Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
     }

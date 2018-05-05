@@ -11,6 +11,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class ApiServiceFactory {
+    public static final String ORIGIN_HEADER = "Origin: https://vegan.thomasbilliet.com";
     private static final String BASE_URL = "https://vegapi-197219.appspot.com";
 
     public static ApiService create() {

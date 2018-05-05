@@ -87,6 +87,14 @@ public class CreateProductViewModel extends ViewModel {
         repo.getCreateProductRepository().productSupermarket.setValue(sm);
     }
 
+    public void createProduct() {
+        long ean = getEanObservable().getValue();
+        Supermarket supermarket = getProductSupermarketObservable().getValue();
+
+        CreateProductBody body = new CreateProductBody(ean, supermarket);
+        repo.getCreateProductRepository().createProduct(body);
+    }
+
     public void createProduct(String name, String brandname, List<String> labels) {
         long ean = getEanObservable().getValue();
         Supermarket supermarket = getProductSupermarketObservable().getValue();
