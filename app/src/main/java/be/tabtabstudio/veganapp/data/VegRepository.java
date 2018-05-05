@@ -295,7 +295,7 @@ public class VegRepository {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.code() == 200) {
-                    Log.i("repo", "Rate product success");
+                    fetchProduct(p.ean);
                 }
             }
 
