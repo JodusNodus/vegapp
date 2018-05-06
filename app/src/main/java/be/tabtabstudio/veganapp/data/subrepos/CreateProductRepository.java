@@ -1,9 +1,7 @@
 package be.tabtabstudio.veganapp.data.subrepos;
 
 import android.arch.lifecycle.MutableLiveData;
-import android.util.Log;
 
-import com.wonderkiln.camerakit.CameraKit;
 import com.wonderkiln.camerakit.CameraKitImage;
 
 import java.io.File;
@@ -43,7 +41,7 @@ public class CreateProductRepository {
     public final MutableLiveData<List<String>> allBrands;
     public final MutableLiveData<String> coverImage;
     public final MutableLiveData<List<String>> labelSuggestions;
-    public final MutableLiveData<List<String>> brandSuggestions;
+    public final MutableLiveData<List<Brand>> brandSuggestions;
     public final MutableLiveData<List<Supermarket>> supermarkets;
     public final MutableLiveData<Boolean> isSuccess;
 

@@ -1,7 +1,6 @@
 package be.tabtabstudio.veganapp.ui;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
 import com.wonderkiln.camerakit.CameraKitImage;
@@ -9,6 +8,7 @@ import com.wonderkiln.camerakit.CameraKitImage;
 import java.util.List;
 
 import be.tabtabstudio.veganapp.data.VegRepository;
+import be.tabtabstudio.veganapp.data.entities.Brand;
 import be.tabtabstudio.veganapp.data.entities.Supermarket;
 import be.tabtabstudio.veganapp.data.network.requestBodies.CreateProductBody;
 import be.tabtabstudio.veganapp.data.subrepos.CreateProductRepository;
@@ -61,7 +61,7 @@ public class CreateProductViewModel extends ViewModel {
         return repo.getCreateProductRepository().labelSuggestions;
     }
 
-    public LiveData<List<String>> getBrandSuggestionsObservable() {
+    public LiveData<List<Brand>> getBrandSuggestionsObservable() {
         return repo.getCreateProductRepository().brandSuggestions;
     }
 

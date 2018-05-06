@@ -1,22 +1,18 @@
 package be.tabtabstudio.veganapp.ui;
 
 import android.app.ProgressDialog;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.Image;
-import android.support.annotation.Nullable;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -24,32 +20,26 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MultiAutoCompleteTextView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.hootsuite.nachos.NachoTextView;
+import com.hootsuite.nachos.chip.Chip;
 import com.hootsuite.nachos.terminator.ChipTerminatorHandler;
 import com.squareup.picasso.Picasso;
-import com.tylersuehr.chips.ChipsInputLayout;
-import com.wonderkiln.camerakit.CameraKitImage;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import be.tabtabstudio.veganapp.R;
-import be.tabtabstudio.veganapp.data.entities.Label;
-import be.tabtabstudio.veganapp.data.entities.Supermarket;
+import be.tabtabstudio.veganapp.data.entities.Brand;
 import be.tabtabstudio.veganapp.utilities.StringUtils;
 
 public class CreateProductActivity extends AppCompatActivity {
 
     private CreateProductViewModel mViewModel;
-    private ImageView newProductImage;
     private NachoTextView labelsInput;
     private AutoCompleteTextView brandNameInput;
     private EditText productNameInput;
@@ -59,6 +49,8 @@ public class CreateProductActivity extends AppCompatActivity {
     private ProgressDialog signupDialog;
     private CoordinatorLayout addProductInfoLayout;
     private LinearLayout addProductLoadingLayout;
+    private FlexboxLayout labelSuggestions;
+    private FlexboxLayout brandSuggestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +69,8 @@ public class CreateProductActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        labelSuggestions = findViewById(R.id.label_suggestions);
+        brandSuggestions = findViewById(R.id.brand_suggestions);
         labelsInput = findViewById(R.id.nacho_text_view);
         brandNameInput = findViewById(R.id.brand_name_input);
         productNameInput = findViewById(R.id.product_name_input);
@@ -138,7 +132,6 @@ public class CreateProductActivity extends AppCompatActivity {
         mViewModel.getProductSupermarketObservable().observe(this, supermarket -> {
 
             if (mViewModel.getAlreadyExistsObservable().getValue() == true) {
-                addSaveObservables();
                 mViewModel.createProduct();
             } else {
                 addCoverImageObservable();
@@ -176,6 +169,7 @@ public class CreateProductActivity extends AppCompatActivity {
         enableView(brandNameInput);
         enableView(labelsInput);
         enableView(doneBtn);
+        addSaveObservables();
     }
 
 
@@ -196,6 +190,10 @@ public class CreateProductActivity extends AppCompatActivity {
         mViewModel.getLabelSuggestionsObservable().observe(this, labelList -> {
             setSuggestedLabelList(labelList);
         });
+
+        mViewModel.getBrandSuggestionsObservable().observe(this, brandList ->{
+            setSuggestedBrandList(brandList);
+        });
     }
 
     private class InputTitleWatcher implements TextWatcher {
@@ -208,7 +206,6 @@ public class CreateProductActivity extends AppCompatActivity {
         @Override
         public void afterTextChanged(Editable editable) {
             setProductTitle();
-            addSaveObservables();
         }
     }
 
@@ -243,7 +240,59 @@ public class CreateProductActivity extends AppCompatActivity {
     }
 
     private void setSuggestedLabelList(List<String> labelList) {
-        //labelChipsInput.setSelectedChipList(getLabelChipList(labelList));
+        for (String label : labelList){
+            Button button = new Button(this);
+            button.setBackgroundResource(R.drawable.chip_drawable);
+            button.setTextColor(Color.WHITE);
+            button.setText(label);
+            button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            button.setAllCaps(false);
+            button.setTextSize(11);
+            button.setMinHeight(5);
+            button.setMinimumHeight(5);
+            button.setMinWidth(5);
+            button.setMinimumWidth(5);
+
+            button.setOnClickListener(v -> {
+                String newLabel = ((Button)v).getText().toString();
+
+                List<Chip> chips = labelsInput.getAllChips();
+                List<String> labels = new ArrayList<>();
+                for (Chip c : chips){
+                    labels.add(c.getText().toString());
+                }
+
+                labels.add(newLabel);
+                labelsInput.setText(labels);
+            });
+
+            labelSuggestions.addView(button);
+        }
+    }
+
+    private void setSuggestedBrandList(List<Brand> brandList) {
+        Log.i("test", "hier komen de logs ...");
+        for (Brand brand : brandList){
+            Log.i("label", brand.name);
+            Button button = new Button(this);
+            button.setBackgroundResource(R.drawable.chip_drawable);
+            button.setTextColor(Color.WHITE);
+            button.setText(brand.name);
+            button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            button.setAllCaps(false);
+            button.setTextSize(11);
+            button.setMinHeight(5);
+            button.setMinimumHeight(5);
+            button.setMinWidth(5);
+            button.setMinimumWidth(5);
+
+            button.setOnClickListener(v -> {
+                String text = ((Button)v).getText().toString();
+                brandNameInput.setText(text);
+            });
+
+            brandSuggestions.addView(button);
+        }
     }
 
     private void setBrandList(List<String> brandList) {
@@ -275,6 +324,7 @@ public class CreateProductActivity extends AppCompatActivity {
     }
 
     private void openProductAndClose() {
+        Log.i("test", "open product and close");
         Intent k = new Intent(this, ProductDetailsActivity.class);
         k.putExtra(ProductDetailsActivity.EXTRA_EAN, mViewModel.getEanObservable().getValue());
         finish();

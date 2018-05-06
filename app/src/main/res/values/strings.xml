@@ -59,4 +59,5 @@
     <string name="cancel">Annuleer</string>
     <string name="rate">Beoordeel</string>
     <string name="give_rating">Geef een rating</string>
+    <string name="suggestions">Suggesties</string>
 </resources>
