@@ -12,9 +12,7 @@ import be.tabtabstudio.veganapp.data.network.results.GetSupermarketsResult;
 import be.tabtabstudio.veganapp.data.network.results.LoginResult;
 import be.tabtabstudio.veganapp.data.network.results.UploadProductImageResult;
 import be.tabtabstudio.veganapp.data.entities.Location;
-import be.tabtabstudio.veganapp.data.entities.User;
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
