@@ -53,6 +53,7 @@ public class SplashViewModel extends ViewModel {
 
     private void openSignUpActivity() {
         Intent k = new Intent(getContext(), SignupActivity.class);
+        ((SplashActivity) getContext()).finish();
         ((SplashActivity) getContext()).startActivityForResult(k, SplashActivity.USER_LOGIN_CODE);
     }
 
