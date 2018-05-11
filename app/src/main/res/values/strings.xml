@@ -1,39 +1,37 @@
 <resources>
-    <string name="app_name">VeganApp</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="app_name">Vegan Food Finder</string>
+    <string name="action_settings">Instellingen</string>
+
+    <!-- Activity titles -->
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_overview">Overzicht</string>
+    <string name="title_activity_signup">Registreer</string>
+    <string name="title_activity_main">Overzicht</string>
+    <string name="title_activity_product_details">Product details</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Paswoord</string>
+    <string name="prompt_password">Wachtwoord</string>
     <string name="prompt_first_name">Voornaam</string>
-    <string name="prompt_last_name">Achternaam</string>
+    <string name="prompt_last_name">Familienaam</string>
     <string name="action_sign_in">Inloggen</string>
     <string name="action_sign_up">Registreer</string>
-    <string name="error_invalid_email">email is niet correct</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_invalid_email">Email is niet correct</string>
+    <string name="error_invalid_password">Het wachtwoord is te kort</string>
+    <string name="error_incorrect_password">Het wachtwoord is niet correct</string>
     <string name="error_field_required">Dit veld is verplicht</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
-    <string name="title_activity_product_details">Product Details</string>
+    <string name="permission_rationale">Contact permissies zijn nodig voor uw e-mailadres.</string>
+
+    <!-- Strings related to products-->
     <string name="action_product_in_cart">IN WINKELMAND</string>
     <string name="action_mark_product_invalid">INCORRECT</string>
     <string name="available_in_supermarkets">Verkrijgbaar in</string>
-    <string name="title_activity_overview">Overview</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="title_activity_signup">Sign up</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="rate_product_action">beoordelen</string>
     <string name="action_member_already">Al geregistreerd? Login</string>
-    <string name="creating_account">Account aanmaken...</string>
+    <string name="creating_account">Account aanmaken …</string>
     <string name="signup_failed">Registratie onsuccesvol</string>
     <string name="error_too_short">minstens 3 karakters</string>
     <string name="error_password_wrong_length">moet tussen 4 en 30 karakters zijn</string>
-    <string name="title_activity_main">Overzicht</string>
     <string name="added_to_favorites">Toegevoegd aan favorieten</string>
     <string name="removed_from_favorites">Verwijderd uit favorieten</string>
     <string name="action_search">Zoeken</string>
