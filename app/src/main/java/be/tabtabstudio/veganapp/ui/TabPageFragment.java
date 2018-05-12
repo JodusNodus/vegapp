@@ -1,6 +1,8 @@
 package be.tabtabstudio.veganapp.ui;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -15,10 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import be.tabtabstudio.veganapp.R;
+import be.tabtabstudio.veganapp.data.entities.Favorites;
 import be.tabtabstudio.veganapp.data.entities.Label;
 import be.tabtabstudio.veganapp.data.entities.Product;
 import be.tabtabstudio.veganapp.data.entities.ProductListItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TabPageFragment extends Fragment {
@@ -29,6 +33,7 @@ public class TabPageFragment extends Fragment {
     public static final String SEARCH_PAGE = "search";
     public static final String POPULAR_PAGE = "popular";
     public static final String RATING_PAGE = "rating";
+    public static final String FAVORITES_PAGE = "favorites";
     private int mColumnCount;
     private OnListFragmentInteractionListener mListener;
     private TabPageViewModel mViewModel;
@@ -97,6 +102,9 @@ public class TabPageFragment extends Fragment {
             case POPULAR_PAGE:
                 mViewModel.getMostPopularProductsObservable().observe(this, observer);
                 mViewModel.fetchMostPopularProducts();
+                break;
+            case FAVORITES_PAGE:
+                mViewModel.getFavoriteProductsObservable().observe(this, observer);
                 break;
             default:
                 mViewModel.getProductsObservableWithLabel(data).observe(this, observer);

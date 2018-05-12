@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements TabPageFragment.O
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        List<String> resArray = Arrays.asList(TabPageFragment.NEW_PAGE, TabPageFragment.POPULAR_PAGE, TabPageFragment.RATING_PAGE, "snack", "koek", "speculoos", "vleesvervanger");
+        List<String> resArray = Arrays.asList(TabPageFragment.NEW_PAGE, TabPageFragment.POPULAR_PAGE, TabPageFragment.RATING_PAGE, TabPageFragment.FAVORITES_PAGE, "snack", "koek", "speculoos", "vleesvervanger");
         for (int i = 0; i < resArray.size(); i++) {
             adapter.addFrag(new TabPageFragment(), resArray.get(i));
         }

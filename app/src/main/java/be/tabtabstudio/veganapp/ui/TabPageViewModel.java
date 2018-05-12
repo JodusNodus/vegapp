@@ -1,11 +1,13 @@
 package be.tabtabstudio.veganapp.ui;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
 import android.content.Context;
 
 import java.util.List;
 
 import be.tabtabstudio.veganapp.data.VegRepository;
+import be.tabtabstudio.veganapp.data.entities.Favorites;
 import be.tabtabstudio.veganapp.data.entities.Label;
 import be.tabtabstudio.veganapp.data.entities.Product;
 
@@ -36,6 +38,13 @@ public class TabPageViewModel extends ViewModel {
 
     public LiveData<List<Product>> getProductsObservableWithLabel(String label) {
         return repo.getProductsObservableWithLabel(label);
+    }
+
+    public LiveData<List<Product>> getFavoriteProductsObservable() {
+        LiveData<Favorites> listOfFavorites = repo.getFavoritesObservable();
+        LiveData<List<Product>> products = Transformations.map(listOfFavorites, favorites
+                -> favorites.getAll());
+        return products;
     }
 
     public void fetchNewProducts() {
